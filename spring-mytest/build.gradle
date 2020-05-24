@@ -1,0 +1,56 @@
+group 'org.springframework'
+version '5.1.3.RELEASE'
+
+apply plugin: 'java'
+apply plugin: 'war'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile(project(":spring-context"))
+    compile(project(":spring-webmvc"))
+    compile(project(":spring-tx"))
+    compile(project(":spring-jdbc"))
+    compile group: 'org.springframework', name: 'spring-aspects', version: '5.1.3.RELEASE'
+    //    compile(project(":spring-aspects"))
+    compile group: 'org.mybatis', name: 'mybatis', version: '3.4.6'
+    compile group: 'org.mybatis', name: 'mybatis-spring', version: '1.3.2'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.38'
+    compile group: 'com.alibaba', name: 'druid', version: '1.1.10'
+    compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.10.1'
+    compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '8.5.37'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'cglib', name: 'cglib', version: '3.2.5'
+}
+
+def createDir = {
+    path ->
+        File dir = new File(path)
+        if (!dir.exists())
+            dir.mkdirs()
+}
+
+task mkDirOfDoc{
+    def path = ['dev-doc', 'test-doc']
+    doFirst {
+        path.forEach(createDir)
+    }
+}
+task mkFileOfDoc {
+    dependsOn mkDirOfDoc
+    def files = ['dev-doc/init.txt', 'test-doc/init.txt']
+    doLast {
+        files.forEach({
+            filePath ->
+                File file = new File(filePath)
+                if (!file.exists())
+                    file.createNewFile()
+        })
+    }
+}
+
