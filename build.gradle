@@ -4,7 +4,7 @@ buildscript {
 	}
 	dependencies {
 		classpath("io.spring.gradle:propdeps-plugin:0.0.9.RELEASE")
-		classpath("org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16")
+//		classpath("org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16")
 	}
 }
 
@@ -13,7 +13,7 @@ plugins {
 	id "io.spring.dependency-management" version "1.0.5.RELEASE" apply false
 	id "org.jetbrains.kotlin.jvm" version "1.2.71" apply false
 	id "org.jetbrains.dokka" version "0.9.17"
-	id "org.asciidoctor.convert" version "1.5.8"
+//	id "org.asciidoctor.convert" version "1.5.8"
 }
 
 ext {
@@ -59,7 +59,7 @@ configure(allprojects) { project ->
 
 	apply plugin: "java"
 	apply plugin: "kotlin"
-	apply plugin: "checkstyle"
+//	apply plugin: "checkstyle"
 	apply plugin: "propdeps"
 	apply plugin: "test-source-set-dependencies"
 	apply plugin: "io.spring.dependency-management"
@@ -141,10 +141,10 @@ configure(allprojects) { project ->
 		reports.junitXml.setDestination(file("$buildDir/test-results"))
 	}
 
-	checkstyle {
-		toolVersion = "8.14"
-		configDir = rootProject.file("src/checkstyle")
-	}
+//	checkstyle {
+//		toolVersion = "8.14"
+//		configDir = rootProject.file("src/checkstyle")
+//	}
 
 	repositories {
 		maven { url "https://repo.spring.io/libs-release" }
@@ -169,27 +169,27 @@ configure(allprojects) { project ->
 		// JSR-305 only used for non-required meta-annotations
 		compileOnly("com.google.code.findbugs:jsr305:3.0.2")
 		testCompileOnly("com.google.code.findbugs:jsr305:3.0.2")
-		checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:0.0.5")
+//		checkstyle("io.spring.javaformat:spring-javaformat-checkstyle:0.0.5")
 	}
 
-	ext.javadocLinks = [
-		"http://docs.oracle.com/javase/8/docs/api/",
-		"http://docs.oracle.com/javaee/7/api/",
-		"http://docs.oracle.com/cd/E13222_01/wls/docs90/javadocs/",  // CommonJ
-		"http://pic.dhe.ibm.com/infocenter/wasinfo/v7r0/topic/com.ibm.websphere.javadoc.doc/web/apidocs/",
-		"http://glassfish.java.net/nonav/docs/v3/api/",
-		"http://docs.jboss.org/jbossas/javadoc/4.0.5/connector/",
-		"http://docs.jboss.org/jbossas/javadoc/7.1.2.Final/",
-		"http://tiles.apache.org/tiles-request/apidocs/",
-		"http://tiles.apache.org/framework/apidocs/",
-		"http://www.eclipse.org/aspectj/doc/released/aspectj5rt-api/",
-		"http://ehcache.org/apidocs/2.10.4",
-		"http://quartz-scheduler.org/api/2.2.1/",
-		"http://fasterxml.github.io/jackson-core/javadoc/2.8/",
-		"http://fasterxml.github.io/jackson-databind/javadoc/2.8/",
-		"http://fasterxml.github.io/jackson-dataformat-xml/javadoc/2.8/",
-		"http://hc.apache.org/httpcomponents-client-ga/httpclient/apidocs/"
-	] as String[]
+//	ext.javadocLinks = [
+//		"http://docs.oracle.com/javase/8/docs/api/",
+//		"http://docs.oracle.com/javaee/7/api/",
+//		"http://docs.oracle.com/cd/E13222_01/wls/docs90/javadocs/",  // CommonJ
+//		"http://pic.dhe.ibm.com/infocenter/wasinfo/v7r0/topic/com.ibm.websphere.javadoc.doc/web/apidocs/",
+//		"http://glassfish.java.net/nonav/docs/v3/api/",
+//		"http://docs.jboss.org/jbossas/javadoc/4.0.5/connector/",
+//		"http://docs.jboss.org/jbossas/javadoc/7.1.2.Final/",
+//		"http://tiles.apache.org/tiles-request/apidocs/",
+//		"http://tiles.apache.org/framework/apidocs/",
+//		"http://www.eclipse.org/aspectj/doc/released/aspectj5rt-api/",
+//		"http://ehcache.org/apidocs/2.10.4",
+//		"http://quartz-scheduler.org/api/2.2.1/",
+//		"http://fasterxml.github.io/jackson-core/javadoc/2.8/",
+//		"http://fasterxml.github.io/jackson-databind/javadoc/2.8/",
+//		"http://fasterxml.github.io/jackson-dataformat-xml/javadoc/2.8/",
+//		"http://hc.apache.org/httpcomponents-client-ga/httpclient/apidocs/"
+//	] as String[]
 }
 
 configure(subprojects - project(":spring-build-src")) { subproject ->
@@ -212,7 +212,8 @@ configure(subprojects - project(":spring-build-src")) { subproject ->
 
 //	javadoc {
 //		description = "Generates project-level javadoc for use in -javadoc jar"
-//
+//		options.encoding = "UTF-8"
+//		options.charSet = "UTF-8"
 //		options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
 //		options.author = true
 //		options.header = project.name
@@ -226,22 +227,22 @@ configure(subprojects - project(":spring-build-src")) { subproject ->
 //		logging.captureStandardOutput LogLevel.INFO  // suppress "## warnings" message
 //	}
 
-	task sourcesJar(type: Jar, dependsOn: classes) {
-		duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-		classifier = "sources"
-		from sourceSets.main.allSource
-		// Don't include or exclude anything explicitly by default. See SPR-12085.
-	}
+//	task sourcesJar(type: Jar, dependsOn: classes) {
+//		duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//		classifier = "sources"
+//		from sourceSets.main.allSource
+//		// Don't include or exclude anything explicitly by default. See SPR-12085.
+//	}
 
-	task javadocJar(type: Jar) {
-		classifier = "javadoc"
-		from javadoc
-	}
+//	task javadocJar(type: Jar) {
+//		classifier = "javadoc"
+//		from javadoc
+//	}
 
-	artifacts {
-		archives sourcesJar
-		archives javadocJar
-	}
+//	artifacts {
+//		archives sourcesJar
+//		archives javadocJar
+//	}
 }
 
 configure(rootProject) {
@@ -249,7 +250,7 @@ configure(rootProject) {
 
 	apply plugin: "groovy"
 	apply from: "${gradleScriptDir}/jdiff.gradle"
-	apply from: "${gradleScriptDir}/docs.gradle"
+//	apply from: "${gradleScriptDir}/docs.gradle"
 
 	dependencyManagement {
 		imports {
@@ -280,9 +281,9 @@ configure(rootProject) {
 	}
 
 	artifacts {
-		archives docsZip
-		archives schemaZip
-		archives distZip
+//		archives docsZip
+//		archives schemaZip
+//		archives distZip
 	}
 
 	wrapper {
@@ -347,4 +348,9 @@ tasks.withType(JavaCompile) {
 //编译groovy代码时采用 UTF-8
 tasks.withType(GroovyCompile) {
 	groovyOptions.encoding = "UTF-8"
+}
+tasks.withType(Javadoc) {
+	options.addStringOption('Xdoclint:none', '-quiet')
+	options.addStringOption('encoding', 'UTF-8')
+	options.addStringOption('charSet', 'UTF-8')
 }

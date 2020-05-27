@@ -5,6 +5,7 @@ import com.spring5.core.bean.Calculation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.core.annotation.AliasFor;
 
 /**
  * @author lizheng
@@ -15,7 +16,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @EnableAspectJAutoProxy
 public class AopConfig {
 
-	@Bean
+	@Bean({"calculationA", "calculationB", "calculationC"})
 	public Calculation calculation() {
 		return new Calculation();
 	}
