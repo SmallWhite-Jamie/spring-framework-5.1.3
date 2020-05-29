@@ -23,6 +23,7 @@ import org.springframework.lang.Nullable;
 /**
  * Strategy interface for determining whether a specific bean definition
  * qualifies as an autowire candidate for a specific dependency.
+ * 用于推断一个特定的 beanDefinition 能否作为指定依赖的候选者的策略接口
  *
  * @author Juergen Hoeller
  * @author Mark Fisher

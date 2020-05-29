@@ -1,10 +1,13 @@
 package com.spring5.core.bean;
 
+import org.springframework.stereotype.Component;
+
 /**
  * @author lizheng
  * @date: 1:25 2018/12/16
  * @Description: Stu
  */
+@Component
 public class Stu {
 	private String name;
 	private String sex;

@@ -3,6 +3,7 @@ package com.spring5.core.config;
 import com.spring5.core.aop.CalculationLogs;
 import com.spring5.core.bean.Calculation;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.annotation.AliasFor;
@@ -14,6 +15,7 @@ import org.springframework.core.annotation.AliasFor;
  */
 @Configuration
 @EnableAspectJAutoProxy
+@ComponentScan("com.spring5.core.bean")
 public class AopConfig {
 
 	@Bean({"calculationA", "calculationB", "calculationC"})
