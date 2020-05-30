@@ -85,14 +85,21 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * e.g. {@link Configuration @Configuration} classes
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... annotatedClasses) {
-		// 调用父类GenericApplicationContext无参构造函数，初始化一个BeanFactory: DefaultListableBeanFactory
+		/**
+		 * 调用父类GenericApplicationContext无参构造函数
+		 *  1、设置默认的bean工厂 DefaultListableBeanFactory
+		 * 	2、初始化bean的 AnnotatedBeanDefinitionReader，注入一系列后置处理器
+		 * 	例如：ConfigurationClassPostProcessor、AutowiredAnnotationBeanPostProcessor等
+		 * 	3、初始化 ClassPathBeanDefinitionScanner
+		 */
 		this();
-		/*
-			注册bean配置类
-			org.springframework.context.annotation.AnnotatedBeanDefinitionReader.doRegisterBean 方法重点完成了bean配置类本身的解析和注册，处理过程可以分为以下几个步骤：
-			1、根据给定的配置类，创建对应的BeanDefinition（AnnotatedGenericBeanDefinition）
-			2、解析bean的作用域，利用AnnotationConfigUtils解析通用注解（Lazy, primary DependsOn, Role ,Description）
-			3、将bean定义信息已beanname，beandifine键值对的形式注册到ioc容器中
+		/**
+		 * 解析并注册配置类的定义信息，将配置信息保存到 bean 工厂的 beanDefinitionMap中
+		 * org.springframework.context.annotation.AnnotatedBeanDefinitionReader.doRegisterBean 方法重点完成了bean配置类本身的解析和注册，
+		 * 处理过程可以分为以下几个步骤：
+		 * 	1、根据给定的配置类，创建对应的BeanDefinition（AnnotatedGenericBeanDefinition）
+		 * 	2、解析bean的作用域，利用AnnotationConfigUtils解析通用注解（Lazy, primary DependsOn, Role ,Description）
+		 * 	3、将bean定义信息已beanname，beandifine键值对的形式注册到ioc容器中
 		 */
 		register(annotatedClasses);
 		// 刷新上下文

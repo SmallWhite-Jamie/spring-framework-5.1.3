@@ -23,7 +23,7 @@ import org.springframework.lang.Nullable;
 /**
  * Strategy interface for determining whether a specific bean definition
  * qualifies as an autowire candidate for a specific dependency.
- * 用于推断一个特定的 beanDefinition 能否作为指定依赖的候选者的策略接口
+ * <p>用于推断一个特定的 beanDefinition 能否作为指定依赖的候选者的策略接口, 换句话说就是判断A对象能否作为B对象的依赖</p>
  *
  * @author Juergen Hoeller
  * @author Mark Fisher
@@ -32,6 +32,7 @@ import org.springframework.lang.Nullable;
 public interface AutowireCandidateResolver {
 
 	/**
+	 * 默认返回都是true,判断给定的bean定义是否允许（有资格）被依赖注入, 默认情况下直接根据BeanDefinition中的定义返回，如果没有进行特殊配置的话为true
 	 * Determine whether the given bean definition qualifies as an
 	 * autowire candidate for the given dependency.
 	 * <p>The default implementation checks
@@ -46,6 +47,7 @@ public interface AutowireCandidateResolver {
 	}
 
 	/**
+	 * <pre>指定的依赖是否是必要的</pre>
 	 * Determine whether the given descriptor is effectively required.
 	 * <p>The default implementation checks {@link DependencyDescriptor#isRequired()}.
 	 * @param descriptor the descriptor for the target method parameter or field
@@ -59,6 +61,11 @@ public interface AutowireCandidateResolver {
 	}
 
 	/**
+	 * <pre>5.1版本才出现的方法, QualifierAnnotationAutowireCandidateResolver 做了实现，
+	 * 默认情况下返回false, 判断是否有@Qualifier注解,一共有两种注解：
+	 * 1.Spring内置的@Qualifier注解，org.springframework.beans.factory.annotation.Qualifier
+	 * 2.添加了JSR-330相关依赖，javax.inject.Qualifier注解
+	 * </pre>
 	 * Determine whether the given descriptor declares a qualifier beyond the type
 	 * (typically - but not necessarily - a specific kind of annotation).
 	 * <p>The default implementation returns {@code false}.
@@ -73,6 +80,7 @@ public interface AutowireCandidateResolver {
 	}
 
 	/**
+	 * 获取一个该依赖的一个建议值, QualifierAnnotationAutowireCandidateResolver 做了实现
 	 * Determine whether a default value is suggested for the given dependency.
 	 * <p>The default implementation simply returns {@code null}.
 	 * @param descriptor the descriptor for the target method parameter or field
@@ -86,6 +94,10 @@ public interface AutowireCandidateResolver {
 	}
 
 	/**
+	 * <p>
+	 *     对某个依赖我们想要延迟注入，但是在创建Bean的过程中这个依赖又是必须的
+	 *     通过下面这个方法就能为延迟注入的依赖, 生成一个代理注入到bean中
+	 * </p>
 	 * Build a proxy for lazy resolution of the actual dependency target,
 	 * if demanded by the injection point.
 	 * <p>The default implementation simply returns {@code null}.

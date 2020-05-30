@@ -235,7 +235,7 @@ public class AnnotatedBeanDefinitionReader {
 		// 生成bean配置类beanName
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
-		// 通用注解解析到abd结构中，主要是处理Lazy, primary DependsOn, Role ,Description这五个注解
+		// 将通用注解的值，解析到abd结构中，主要是处理 Lazy, primary DependsOn, Role ,Description这五个注解的配置
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
 		// @Qualifier特殊限定符处理
 		if (qualifiers != null) {

@@ -16,9 +16,6 @@
 
 package org.springframework.beans.factory.support;
 
-import java.lang.reflect.Method;
-import java.util.Properties;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.FactoryBean;
@@ -30,7 +27,11 @@ import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
+import java.lang.reflect.Method;
+import java.util.Properties;
+
 /**
+ * 额外增加了 GenericType 泛型 的判断处理能力
  * Basic {@link AutowireCandidateResolver} that performs a full generic type
  * match with the candidate's type if the dependency is declared as a generic type
  * (e.g. Repository&lt;Customer&gt;).
@@ -63,9 +64,10 @@ public class GenericTypeAwareAutowireCandidateResolver extends SimpleAutowireCan
 	@Override
 	public boolean isAutowireCandidate(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) {
 		if (!super.isAutowireCandidate(bdHolder, descriptor)) {
-			// If explicitly false, do not proceed with any other checks...
+			// 调用父类方法,如果BeanDefinition中已经配置了这个bean不做为依赖进行注入的话，直接返回false
 			return false;
 		}
+		// 检查泛型是否匹配
 		return checkGenericTypeMatch(bdHolder, descriptor);
 	}
 

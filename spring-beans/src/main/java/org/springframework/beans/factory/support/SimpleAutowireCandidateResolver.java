@@ -21,6 +21,7 @@ import org.springframework.beans.factory.config.DependencyDescriptor;
 import org.springframework.lang.Nullable;
 
 /**
+ * <p>比于 AutowireCandidateResolver 接口没有什么区别，实现也就是父接口中的默认实现，一般也不会使用这个类</p>
  * {@link AutowireCandidateResolver} implementation to use when no annotation
  * support is available. This implementation checks the bean definition only.
  *
