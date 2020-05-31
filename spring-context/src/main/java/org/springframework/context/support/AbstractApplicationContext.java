@@ -522,6 +522,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// 3、初始化和设置beanFactory的初始化参数
+			//   设置类加载器、bean表达式解析器、添加一些早期的 bean 后置处理器 ApplicationContextAwareProcessor、ApplicationListenerDetector、LoadTimeWeaverAwareProcessor
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);
 
@@ -552,11 +553,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Initialize other special beans in specific context subclasses.
 				onRefresh();
 
-				//10、注册时间监听器，将所有项目里面的ApplicationListener（getApplicationListeners()）注册到容器中来
+				//10、注册事件监听器，将所有项目里面的ApplicationListener（getApplicationListeners()）注册到容器中来
 				// Check for listener beans and register them.
 				registerListeners();
 
-				// *11*、初始化所有剩下的单实例bean,单例bean在初始化容器时创建，原型bean在获取时（getbean）时创建
+				// *11*、初始化所有剩下的非懒加载的单实例bean,单例bean在初始化容器时创建，原型bean在获取时（getbean）时创建
 				// Instantiate all remaining (non-lazy-init) singletons.
 				finishBeanFactoryInitialization(beanFactory);
 

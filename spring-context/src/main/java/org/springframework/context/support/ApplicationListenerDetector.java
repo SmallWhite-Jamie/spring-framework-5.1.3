@@ -16,12 +16,8 @@
 
 package org.springframework.context.support;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
@@ -29,7 +25,13 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
+ *
+ * <p>1、在Bean初始化完成之后：如果Bean是单例的则并且bean instanceof ApplicationListener。加入到this.applicationListeners中。</p>
+ * <p>2、在Bean销毁之前搞事情： 如果Bean是一个ApplicationListener，则会从ApplicationEventMulticaster（事件广播器）中提前删除了。</p>
  * {@code BeanPostProcessor} that detects beans which implement the {@code ApplicationListener}
  * interface. This catches beans that can't reliably be detected by {@code getBeanNamesForType}
  * and related operations which only work against top-level beans.
