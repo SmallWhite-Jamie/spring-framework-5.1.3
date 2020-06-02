@@ -248,7 +248,6 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		Object bean;
 
 		// 从单例缓存池中判断有没有bean的实例，包括spring启动时添加的单实例bean和非懒加载的单例对象
-		// Eagerly check singleton cache for manually registered singletons.
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
@@ -324,7 +323,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					}
 				}
 
-				//创建bean对象
+				// 创建bean对象
 				if (mbd.isSingleton()) {
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
@@ -1277,9 +1276,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					else {
 						mbd = new RootBeanDefinition(bd);
 					}
-				}
-				else {
-					// Child bean definition: needs to be merged with parent.
+				} else {
+					// 将子父类的 BeanDefinition 进行合并为一个新的 RootBeanDefinition
 					BeanDefinition pbd;
 					try {
 						String parentBeanName = transformedBeanName(bd.getParentName());

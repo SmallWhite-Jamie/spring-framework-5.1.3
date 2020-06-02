@@ -15,7 +15,7 @@ import org.springframework.core.annotation.AliasFor;
  */
 @Configuration
 @EnableAspectJAutoProxy
-@ComponentScan("com.spring5.core.bean")
+@ComponentScan({"com.spring5.core.bean", "com.spring5.core.beanpostprocessors"})
 public class AopConfig {
 
 	@Bean({"calculationA", "calculationB", "calculationC"})
