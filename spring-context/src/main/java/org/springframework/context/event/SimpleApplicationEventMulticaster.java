@@ -136,6 +136,7 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
 				executor.execute(() -> invokeListener(listener, event));
 			}
 			else {
+				// 此处调用事件监听的方法，如果有@Async标注的方法会调用代理对象，通过异步的方式调用
 				invokeListener(listener, event);
 			}
 		}
