@@ -293,6 +293,7 @@ public class ContextLoader {
 					configureAndRefreshWebApplicationContext(cwac, servletContext);
 				}
 			}
+			// 将父容器设置到servlet上下文的 attribute (本质是org.apache.catalina.core.ApplicationContext的一个属性 ConcurrentHashMap) 中，子容器(DispatcherServlet设置的mvc容器)在 DispatcherServlet 初始化时会将该容器设置为自身的父容器
 			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, this.context);
 
 			ClassLoader ccl = Thread.currentThread().getContextClassLoader();
