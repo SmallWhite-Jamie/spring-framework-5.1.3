@@ -282,12 +282,14 @@ public class ContextLoader {
 				if (!cwac.isActive()) {
 					// The context has not yet been refreshed -> provide services such as
 					// setting the parent context, setting the application context id, etc
+					// 在spring上下文刷新之前设置父容器对象,如果父容器为空则设置null
 					if (cwac.getParent() == null) {
 						// The context instance was injected without an explicit parent ->
 						// determine parent for root web application context, if any.
 						ApplicationContext parent = loadParentContext(servletContext);
 						cwac.setParent(parent);
 					}
+					// 配置和刷新spring容器
 					configureAndRefreshWebApplicationContext(cwac, servletContext);
 				}
 			}
@@ -391,11 +393,12 @@ public class ContextLoader {
 		// The wac environment's #initPropertySources will be called in any case when the context
 		// is refreshed; do it eagerly here to ensure servlet property sources are in place for
 		// use in any post-processing or initialization that occurs below prior to #refresh
+		// 在刷新之前，设置Servlet属性
 		ConfigurableEnvironment env = wac.getEnvironment();
 		if (env instanceof ConfigurableWebEnvironment) {
 			((ConfigurableWebEnvironment) env).initPropertySources(sc, null);
 		}
-
+		// 在 WebApplicationContext.refresh 之前，实例化实现 ApplicationContextInitializer 接口类，可以根据@Order进行排序
 		customizeContext(sc, wac);
 		wac.refresh();
 	}

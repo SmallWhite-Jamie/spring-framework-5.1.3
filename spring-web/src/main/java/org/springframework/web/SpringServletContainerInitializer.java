@@ -31,6 +31,14 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ReflectionUtils;
 
 /**
+ *
+ * <pre>
+ *     ServletContainerInitializer, Servlet 3.0引入的接口, 用于在web应用启动时动态添加servlet、filter和listener；
+ *     基于spi机制，META-INF/services/javax.servlet.ServletContainerInitializer文件中存放实现该接口的类，这些类会被容器调用；
+ *     @HandlesTypes(WebApplicationInitializer.class) WebApplicationInitializer 的所有实现类在 SpringServletContainerInitializer 调用
+ *     onStartup 方法时会被加载
+ * </pre>
+ *
  * Servlet 3.0 {@link ServletContainerInitializer} designed to support code-based
  * configuration of the servlet container using Spring's {@link WebApplicationInitializer}
  * SPI as opposed to (or possibly in combination with) the traditional

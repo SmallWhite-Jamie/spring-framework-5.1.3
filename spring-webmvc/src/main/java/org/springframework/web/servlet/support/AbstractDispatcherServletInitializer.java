@@ -57,6 +57,45 @@ public abstract class AbstractDispatcherServletInitializer extends AbstractConte
 	public static final String DEFAULT_SERVLET_NAME = "dispatcher";
 
 
+	/**
+	 * 此方法在容器启动时候会被调用,这里体现了子父容器概念
+	 *     1、调用父类的 super.onStartup(servletContext)：
+	 *         1)创建一个父容器 AnnotationConfigWebApplicationContext
+	 *         2)注册一个 ContextLoaderListener
+	 *
+	 *     2、注册 mvc 相关组件
+	 *     	   1)注册 DispatcherServlet
+	 *     	   2)创建一个子容器 AnnotationConfigWebApplicationContext
+	 *
+	 * 对应 XML 配置如下
+	 * <web-app>
+	 *     <listener>
+	 *         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	 *     </listener>
+	 *
+	 *     <context-param>
+	 *         <param-name>contextConfigLocation</param-name>
+	 *         <param-value>/WEB-INF/app-context.xml</param-value>
+	 *     </context-param>
+	 *
+	 *     <servlet>
+	 *         <servlet-name>app</servlet-name>
+	 *         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	 *         <init-param>
+	 *             <param-name>contextConfigLocation</param-name>
+	 *             <param-value></param-value>
+	 *         </init-param>
+	 *         <load-on-startup>1</load-on-startup>
+	 *     </servlet>
+	 *
+	 *     <servlet-mapping>
+	 *         <servlet-name>app</servlet-name>
+	 *         <url-pattern>/app/*</url-pattern>
+	 *     </servlet-mapping>
+	 * </web-app>
+	 * @param servletContext
+	 * @throws ServletException
+	 */
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		super.onStartup(servletContext);
@@ -78,23 +117,29 @@ public abstract class AbstractDispatcherServletInitializer extends AbstractConte
 		String servletName = getServletName();
 		Assert.hasLength(servletName, "getServletName() must not return null or empty");
 
+		// 创建 mvc 子容器
 		WebApplicationContext servletAppContext = createServletApplicationContext();
 		Assert.notNull(servletAppContext, "createServletApplicationContext() must not return null");
 
+		// 创建 dispatcherServlet
 		FrameworkServlet dispatcherServlet = createDispatcherServlet(servletAppContext);
 		Assert.notNull(dispatcherServlet, "createDispatcherServlet(WebApplicationContext) must not return null");
+		// 设置 mvc 容器的初始化器, 实现 ApplicationContextInitializer 接口的自定义初始化器, 在 spring mvc 容器刷新之前会调用
 		dispatcherServlet.setContextInitializers(getServletApplicationContextInitializers());
 
+		// servlet 容器中添加 DispatcherServlet
 		ServletRegistration.Dynamic registration = servletContext.addServlet(servletName, dispatcherServlet);
 		if (registration == null) {
 			throw new IllegalStateException("Failed to register servlet with name '" + servletName + "'. " +
 					"Check if there is another servlet registered under the same name.");
 		}
 
+		// 设置 DispatcherServlet 的启动时机、Mapping映射、异步支持
 		registration.setLoadOnStartup(1);
 		registration.addMapping(getServletMappings());
 		registration.setAsyncSupported(isAsyncSupported());
 
+		// servlet 容器中 添加过滤器
 		Filter[] filters = getServletFilters();
 		if (!ObjectUtils.isEmpty(filters)) {
 			for (Filter filter : filters) {
@@ -102,6 +147,7 @@ public abstract class AbstractDispatcherServletInitializer extends AbstractConte
 			}
 		}
 
+		// 子类自定义配置默认空实现
 		customizeRegistration(registration);
 	}
 

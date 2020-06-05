@@ -2,6 +2,7 @@ package com.spring5.mvc;
 
 import com.spring5.mvc.config.RootConfig;
 import com.spring5.mvc.config.ServletConfig;
+import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 /**
@@ -12,6 +13,12 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
  * @date 2020/6/4 18:18
  */
 public class WebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+
+	@Override
+	protected ApplicationContextInitializer<?>[] getRootApplicationContextInitializers() {
+		return super.getRootApplicationContextInitializers();
+	}
+
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		return new Class[] { RootConfig.class };
@@ -26,4 +33,5 @@ public class WebApplicationInitializer extends AbstractAnnotationConfigDispatche
 	protected String[] getServletMappings() {
 		return new String[] { "/" };
 	}
+
 }
