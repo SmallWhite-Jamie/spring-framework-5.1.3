@@ -16,4 +16,10 @@ public class DemoController {
 	public String demo() {
 		return "demo";
 	}
+
+	@RequestMapping("requestToViewNameTranslator")
+	public void requestToViewNameTranslator() {
+		System.out.println("requestToViewNameTranslator");
+	}
+
 }

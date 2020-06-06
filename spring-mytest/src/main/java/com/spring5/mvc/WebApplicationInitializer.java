@@ -20,6 +20,11 @@ public class WebApplicationInitializer extends AbstractAnnotationConfigDispatche
 	}
 
 	@Override
+	protected ApplicationContextInitializer<?>[] getServletApplicationContextInitializers() {
+		return super.getServletApplicationContextInitializers();
+	}
+
+	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		return new Class[] { RootConfig.class };
 	}

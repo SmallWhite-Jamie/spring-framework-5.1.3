@@ -707,7 +707,9 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 
 		postProcessWebApplicationContext(wac);
+		// 刷新spring上下文之前调用 ApplicationContextInitializer
 		applyInitializers(wac);
+		// 刷新spring容器
 		wac.refresh();
 	}
 
