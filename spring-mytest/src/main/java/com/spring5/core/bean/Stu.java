@@ -1,5 +1,6 @@
 package com.spring5.core.bean;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -11,6 +12,10 @@ import javax.annotation.PostConstruct;
  */
 @Component()
 public class Stu {
+
+	@Autowired
+	private Teacher teacher;
+
 	private String name;
 	private String sex;
 

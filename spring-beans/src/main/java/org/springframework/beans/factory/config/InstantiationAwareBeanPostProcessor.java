@@ -16,11 +16,11 @@
 
 package org.springframework.beans.factory.config;
 
-import java.beans.PropertyDescriptor;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
 import org.springframework.lang.Nullable;
+
+import java.beans.PropertyDescriptor;
 
 /**
  * Subinterface of {@link BeanPostProcessor} that adds a before-instantiation callback,
@@ -47,6 +47,7 @@ import org.springframework.lang.Nullable;
 public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 
 	/**
+	 * 此方法会在父类的postProcessBeforeInitialization之前执行，在bean实例化之前执行，如果返回了bean实例, 则会替代原来默认实例化的bean
 	 * Apply this BeanPostProcessor <i>before the target bean gets instantiated</i>.
 	 * The returned bean object may be a proxy to use instead of the target bean,
 	 * effectively suppressing default instantiation of the target bean.
@@ -74,11 +75,8 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	}
 
 	/**
-	 * Perform operations after the bean has been instantiated, via a constructor or factory method,
-	 * but before Spring property population (from explicit properties or autowiring) occurs.
-	 * <p>This is the ideal callback for performing custom field injection on the given bean
-	 * instance, right before Spring's autowiring kicks in.
-	 * <p>The default implementation returns {@code true}.
+	 * 在bean实例化之后，这时目标对象已经存在，但属性还未被赋值，这里的boolean返回值是决定要不要调用postProcessProperties方法的因素之一（因为还有一个因素是mbd.getDependencyCheck()）
+	 * 初始化之前执行，如果该方法返回false,并且不需要check，那么postProcessPropertyValues就会被忽略不执行；如果返回true，postProcessPropertyValues就会被执行
 	 * @param bean the bean instance created, with properties not having been set yet
 	 * @param beanName the name of the bean
 	 * @return {@code true} if properties should be set on the bean; {@code false}
@@ -93,6 +91,7 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 	}
 
 	/**
+	 * <p>对象属性值进行修改</p>
 	 * Post-process the given property values before the factory applies them
 	 * to the given bean, without any need for property descriptors.
 	 * <p>Implementations should return {@code null} (the default) if they provide a custom
