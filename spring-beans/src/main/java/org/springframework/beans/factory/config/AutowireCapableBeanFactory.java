@@ -16,8 +16,6 @@
 
 package org.springframework.beans.factory.config;
 
-import java.util.Set;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.TypeConverter;
 import org.springframework.beans.factory.BeanFactory;
@@ -25,9 +23,11 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.lang.Nullable;
 
+import java.util.Set;
+
 /**
- * <p>提供了 Bean的创建、注入职能，并且 提供了对 Bean初始化前后的扩展性处理职能，
- * 主要职责是处理在当前 工厂中注册的 Bean 实例并使其达到可用状态。</p>
+ * <p>提供了 Bean的创建、注入职能，并且提供了对 Bean初始化前后的扩展性处理职能，
+ * 主要职责是处理在当前工厂中注册的 Bean 实例并使其达到可用状态。</p>
  * Extension of the {@link org.springframework.beans.factory.BeanFactory}
  * interface to be implemented by bean factories that are capable of
  * autowiring, provided that they want to expose this functionality for
