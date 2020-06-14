@@ -16,8 +16,6 @@
 
 package org.springframework.web.servlet.config.annotation;
 
-import java.util.List;
-
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.Formatter;
 import org.springframework.format.FormatterRegistry;
@@ -30,6 +28,8 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+
+import java.util.List;
 
 /**
  * Defines callback methods to customize the Java-based configuration for
@@ -47,6 +47,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 public interface WebMvcConfigurer {
 
 	/**
+	 * 访问路径相关配置
 	 * Helps with configuring HandlerMappings path matching options such as trailing slash match,
 	 * suffix registration, path matcher and path helper.
 	 * Configured path matcher and path helper instances are shared for:
@@ -61,12 +62,14 @@ public interface WebMvcConfigurer {
 	}
 
 	/**
+	 * 配置请求返回多个数据格式 (MediaType)
 	 * Configure content negotiation options.
 	 */
 	default void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
 	}
 
 	/**
+	 * 设置异步请求配置
 	 * Configure asynchronous request handling options.
 	 */
 	default void configureAsyncSupport(AsyncSupportConfigurer configurer) {

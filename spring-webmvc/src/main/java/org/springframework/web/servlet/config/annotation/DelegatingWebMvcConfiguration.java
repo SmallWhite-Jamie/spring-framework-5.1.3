@@ -16,8 +16,6 @@
 
 package org.springframework.web.servlet.config.annotation;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -30,7 +28,12 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import java.util.List;
+
 /**
+ *
+ * 通过默认配置(WebMvcConfigurationSupport)和自定义配置来配置 Spring MVC
+ *
  * A subclass of {@code WebMvcConfigurationSupport} that detects and delegates
  * to all beans of type {@link WebMvcConfigurer} allowing them to customize the
  * configuration provided by {@code WebMvcConfigurationSupport}. This is the
@@ -42,9 +45,18 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 @Configuration
 public class DelegatingWebMvcConfiguration extends WebMvcConfigurationSupport {
 
+	/**
+	 * WebMvcConfigurerComposite 由多个 WebMvcConfigurer 的一个组合，自身也实现了 WebMvcConfigurer接口
+	 * 内部维护了 List<WebMvcConfigurer> delegates = new ArrayList<>(); 在调用自身方法时候会调用delegates中所有
+	 * 对象的对应方法。
+	 */
 	private final WebMvcConfigurerComposite configurers = new WebMvcConfigurerComposite();
 
 
+	/**
+	 * 注入 WebMvcConfigurer 的所有自定义实现类，开发过程中自定义的WebMvcConfigurer在这里进行设置添加到configurers中。
+	 * @param configurers
+	 */
 	@Autowired(required = false)
 	public void setConfigurers(List<WebMvcConfigurer> configurers) {
 		if (!CollectionUtils.isEmpty(configurers)) {
