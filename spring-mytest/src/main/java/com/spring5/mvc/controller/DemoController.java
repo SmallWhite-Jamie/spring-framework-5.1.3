@@ -4,8 +4,9 @@ import com.spring5.core.bean.Teacher;
 import com.spring5.mvc.converters.MyHttpMessageConverter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * DemoController
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @version 1.0
  * @date 2020/6/4 18:32
  */
-@Controller
+@RestController
 public class DemoController {
 
 	private static final Log log = LogFactory.getLog(DemoController.class);
@@ -31,9 +32,9 @@ public class DemoController {
 		System.out.println("requestToViewNameTranslator");
 	}
 
-	@RequestMapping("httpMessageConverter")
-	public MyHttpMessageConverter.MyClass httpMessageConverter() {
-		MyHttpMessageConverter.MyClass myClass = new MyHttpMessageConverter.MyClass();
+	@RequestMapping(value = "httpMessageConverter")
+	public MyHttpMessageConverter.MyClass httpMessageConverter(@RequestBody MyHttpMessageConverter.MyClass myClass) {
+		System.out.println(myClass);
 		return myClass;
 	}
 

@@ -1,4 +1,4 @@
-package com.spring5.mvc;
+package com.spring5.mvc.config;
 
 import com.spring5.mvc.config.RootConfig;
 import com.spring5.mvc.config.ServletConfig;

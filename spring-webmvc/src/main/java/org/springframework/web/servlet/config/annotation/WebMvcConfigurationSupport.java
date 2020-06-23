@@ -558,6 +558,7 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	 */
 	@Bean
 	public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
+		// 创建请求处理器适配器, 调用不同的set方法, 加载WebMvcConfigurer子类的部分配置信息
 		RequestMappingHandlerAdapter adapter = createRequestMappingHandlerAdapter();
 		adapter.setContentNegotiationManager(mvcContentNegotiationManager());
 		adapter.setMessageConverters(getMessageConverters());
@@ -744,8 +745,10 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 			this.messageConverters = new ArrayList<>();
 			configureMessageConverters(this.messageConverters);
 			if (this.messageConverters.isEmpty()) {
+				// 如果没有配置消息转换器, 加载默认的8个转换器(一般是8个包括jackson)
 				addDefaultHttpMessageConverters(this.messageConverters);
 			}
+			// 添加扩展的消息转换器
 			extendMessageConverters(this.messageConverters);
 		}
 		return this.messageConverters;
