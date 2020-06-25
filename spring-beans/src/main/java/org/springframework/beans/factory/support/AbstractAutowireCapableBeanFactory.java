@@ -564,8 +564,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		}
 
-		// 解决循环依赖问题
-		// 待创建的 beanName 必须是单例，并且包含在 Set<String> singletonsCurrentlyInCreation 集合中，才会调用 addSingletonFactory
+		// 解决循环依赖问题,循环依赖解决前提满足：
+		// 	1、单例bean；
+		// 	2、BeanFactory this.allowCircularReferences = true；
+		// 	3、this.singletonsCurrentlyInCreation.contains(beanName) 包含;
+		// 	因为在这里org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(java.lang.String, org.springframework.beans.factory.ObjectFactory<?>)
+		//  中的beforeSingletonCreation(beanName); 会将创建的Bean添加到 singletonsCurrentlyInCreation 容器中
+		// 满足以上三个条件才会，才会调用 addSingletonFactory 将创建好的bean添加到三级缓存 Map<String, ObjectFactory<?>> singletonFactories 中
+		// 解决循环依赖过程中会从singletonFactories中获取创建好的对象进行注入
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences && isSingletonCurrentlyInCreation(beanName));
 		if (earlySingletonExposure) {
 			if (logger.isTraceEnabled()) {
@@ -573,7 +579,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 						"' to allow for resolving potential circular references");
 			}
 			// 当正在创建A时，A依赖B，此时通过 将A作为ObjectFactory放入单例工厂中进行early expose，此处B需要引用A，但A正在创建，
-			// 从单例工厂拿到ObjectFactory，从而允许循环依赖
+			// 则B从单例工厂拿到 ObjectFactory 调用 getObject() 方法，进行注入，从而允许循环依赖
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 

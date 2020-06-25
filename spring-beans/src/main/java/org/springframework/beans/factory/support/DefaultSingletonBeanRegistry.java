@@ -16,16 +16,6 @@
 
 package org.springframework.beans.factory.support;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanCreationNotAllowedException;
 import org.springframework.beans.factory.BeanCurrentlyInCreationException;
@@ -36,6 +26,16 @@ import org.springframework.core.SimpleAliasRegistry;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Generic registry for shared bean instances, implementing the
@@ -73,7 +73,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	/** 保存BeanName和bean的实例（此时对象已经完成了属性注入）. */
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 
-	/** 保存对象的BeanName和创建bean的工厂AbstractAutowireCapableBeanFactory(ObjectFactory)，（对象的构造函数是在这一步完成的） */
+	/** 保存对象的BeanName和创建bean的工厂AbstractAutowireCapableBeanFactory(ObjectFactory)，（对象的构造函数创建完就会加入） */
 	private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
 
 	/** 保存对象BeanName和对象的早期实例（ObjectFactory#getObject得到的对象）（此时对象还没注入属性），此时可以作为对象填充依赖。 */
@@ -178,6 +178,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 			synchronized (this.singletonObjects) {
 				singletonObject = this.earlySingletonObjects.get(beanName);
 				if (singletonObject == null && allowEarlyReference) {
+					// 循环依赖的bean B，在这里可以获取正在创建的 bean A的早期对象
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 					if (singletonFactory != null) {
 						singletonObject = singletonFactory.getObject();

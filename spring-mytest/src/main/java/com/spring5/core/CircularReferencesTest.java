@@ -12,7 +12,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * @version 1.0
  * @date 2020/6/24 8:20
  */
-public class CircularReferencesMain {
+public class CircularReferencesTest {
 
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(CircularReferencesConfig.class);
