@@ -549,7 +549,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Initialize event multicaster for this context.
 				initApplicationEventMulticaster();
 
-				// 9、空方法，可以用于子类实现在容器刷新时自定义逻辑
+				// 9、空方法，可以用于子类实现在容器刷新时自定义逻辑, spring boot 内置tomcat在此时创建
 				// Initialize other special beans in specific context subclasses.
 				onRefresh();
 

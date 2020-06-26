@@ -16,12 +16,8 @@
 
 package org.springframework.aop.framework.autoproxy;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aop.Advisor;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanCurrentlyInCreationException;
@@ -30,9 +26,12 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Helper for retrieving standard Spring Advisors from a BeanFactory,
- * for use with auto-proxying.
+ * 从BeanFactory检索标准Spring Advisor 通知，用于自动代理。
+ * Helper for retrieving standard Spring Advisors from a BeanFactory, for use with auto-proxying.
  *
  * @author Juergen Hoeller
  * @since 2.0.2
@@ -65,11 +64,14 @@ public class BeanFactoryAdvisorRetrievalHelper {
 	 * @see #isEligibleBean
 	 */
 	public List<Advisor> findAdvisorBeans() {
-		// Determine list of advisor bean names, if not cached already.
+		// cachedAdvisorBeanNames 用来保存所有Advisor通知的全路径名，
+		// 会在创建第一个单实例bean时解析出来放入缓存中，以后就不再解析
 		String[] advisorNames = this.cachedAdvisorBeanNames;
 		if (advisorNames == null) {
-			// Do not initialize FactoryBeans here: We need to leave all regular beans
-			// uninitialized to let the auto-proxy creator apply to them!
+			// 从容器中获取所有Advisor接口的实现类 的 name
+			// 举例事务管理: @EnableTransactionManagement -> 导入 ProxyTransactionManagementConfiguration 配置类
+			// -> 创建 BeanFactoryTransactionAttributeSourceAdvisor 对象 bean name 等于
+			// 'org.springframework.transaction.config.internalTransactionAdvisor' 存放在 advisorNames 中
 			advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 					this.beanFactory, Advisor.class, true, false);
 			this.cachedAdvisorBeanNames = advisorNames;
@@ -80,7 +82,16 @@ public class BeanFactoryAdvisorRetrievalHelper {
 
 		List<Advisor> advisors = new ArrayList<>();
 		for (String name : advisorNames) {
+			// 判断是不是合格/合适的 是不是我们所需要的 不同的子类会重写 isEligibleBean 方法
+			// 举例事务管理:
+			// InfrastructureAdvisorAutoProxyCreator
+			// 	@Override
+			//	protected boolean isEligibleAdvisorBean(String beanName) {
+			//		return (this.beanFactory != null && this.beanFactory.containsBeanDefinition(beanName) &&
+			//				this.beanFactory.getBeanDefinition(beanName).getRole() == BeanDefinition.ROLE_INFRASTRUCTURE);
+			//	}
 			if (isEligibleBean(name)) {
+				// 判断 BeanFactoryTransactionAttributeSourceAdvisor 是不是正在创建
 				if (this.beanFactory.isCurrentlyInCreation(name)) {
 					if (logger.isTraceEnabled()) {
 						logger.trace("Skipping currently created advisor '" + name + "'");
@@ -88,6 +99,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
 				}
 				else {
 					try {
+						// 如果不是正在创建的bean，则从beanFactory中获取出来，添加到advisors列表中。
 						advisors.add(this.beanFactory.getBean(name, Advisor.class));
 					}
 					catch (BeanCreationException ex) {

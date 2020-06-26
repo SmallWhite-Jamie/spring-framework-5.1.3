@@ -487,7 +487,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
-			// 给 BeanPostProcessors一个返回代理bean实例的机会。
+			// 给 BeanPostProcessors一个返回代理bean实例的机会，由于此处真是的对象没有生成，所以一般情况下此处不会生成代理对象实例
+			// aop 和事务的切面信息在这里进行解析和缓存
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;
@@ -588,7 +589,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			// 实现对象属性的注入，@Autowired 就在这里将applyMergedBeanDefinitionPostProcessors的预解析注入信息，进行属性注入。
 			populateBean(beanName, mbd, instanceWrapper);
-			// 此处调用 BeanPostProcessor 接口的方法
+			// 此处调用 BeanPostProcessor 接口的方法，进行对象的初始化操作，在这里生成代理对象
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1746,15 +1747,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}, getAccessControlContext());
 		}
 		else {
+			// 如果bean实现了 BeanNameAware、BeanClassLoaderAware、BeanFactoryAware会在这里进行回调
 			invokeAwareMethods(beanName, bean);
 		}
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
+			// 调用bean后置处理器的初始化之前的方法 postProcessBeforeInitialization 不同于之前调用的实例化前后处理器方法
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
 		try {
+			// 调用bean的初始化方法，如果bean实现了InitializingBean接口，会在此时回调afterPropertiesSet方法；或者调用 invokeCustomInitMethod
 			invokeInitMethods(beanName, wrappedBean, mbd);
 		}
 		catch (Throwable ex) {
@@ -1763,6 +1767,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					beanName, "Invocation of init method failed", ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
+			// 调用bean后置处理器的初始化之后的方法 postProcessAfterInitialization， 事务aop的代理对象在此时创建
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 

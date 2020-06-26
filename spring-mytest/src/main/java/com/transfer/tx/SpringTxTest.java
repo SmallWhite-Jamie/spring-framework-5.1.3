@@ -16,7 +16,7 @@ public class SpringTxTest {
         context.refresh();
 
         UserService userService = context.getBean(UserService.class);
-        int insert = userService.insert(4,"zs", "456");
+        int insert = userService.insert("zs", "456");
         System.out.println(insert);
         context.close();
     }

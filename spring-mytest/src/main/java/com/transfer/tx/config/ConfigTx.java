@@ -7,6 +7,9 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -20,8 +23,9 @@ import javax.sql.DataSource;
  * @Description: ConfigTx
  */
 @Configuration
+@EnableAspectJAutoProxy
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.transfer.tx.service")
+@ComponentScan(basePackages = {"com.transfer.tx.service", "com.transfer.tx.aop"})
 @MapperScan(basePackages = "com.transfer.tx.mapper")
 public class ConfigTx {
     @Bean
@@ -50,6 +54,8 @@ public class ConfigTx {
     SqlSessionFactory sqlSessionFactoryBean() throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource());
+		ClassPathResource resource = new ClassPathResource("mybatis-config.xml");
+		sqlSessionFactoryBean.setConfigLocation(new InputStreamResource(resource.getInputStream()));
         return sqlSessionFactoryBean.getObject();
     }
 }

@@ -26,6 +26,8 @@ import org.springframework.core.type.AnnotationMetadata;
 import java.util.Set;
 
 /**
+ * AutoProxyRegistrar 实现了 ImportBeanDefinitionRegistrar 接口，spring容器会回调 registerBeanDefinitions 方法，
+ * 通过registerBeanDefinitions方法的回调为容器注入新的组件
  * Registers an auto proxy creator against the current {@link BeanDefinitionRegistry}
  * as appropriate based on an {@code @Enable*} annotation having {@code mode} and
  * {@code proxyTargetClass} attributes set to the correct values.
@@ -68,7 +70,7 @@ public class AutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 					Boolean.class == proxyTargetClass.getClass()) {
 				candidateFound = true;
 				if (mode == AdviceMode.PROXY) {
-					// 给容器中注册一个 InfrastructureAdvisorAutoProxyCreator
+					// 给容器中注册一个 InfrastructureAdvisorAutoProxyCreator，
 					// 利用后置处理器机制在对象创建以后，包装对象，返回一个代理对象（增强器），代理对象执行方法利用拦截器链进行调用；
 					AopConfigUtils.registerAutoProxyCreatorIfNecessary(registry);
 					if ((Boolean) proxyTargetClass) {
