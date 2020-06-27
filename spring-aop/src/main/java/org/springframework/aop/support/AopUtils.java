@@ -284,9 +284,11 @@ public abstract class AopUtils {
 	 * @return whether the pointcut can apply on any method
 	 */
 	public static boolean canApply(Advisor advisor, Class<?> targetClass, boolean hasIntroductions) {
+		// 引介增强器判断
 		if (advisor instanceof IntroductionAdvisor) {
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
 		}
+		//
 		else if (advisor instanceof PointcutAdvisor) {
 			PointcutAdvisor pca = (PointcutAdvisor) advisor;
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
@@ -312,8 +314,11 @@ public abstract class AopUtils {
 
 		// 当前bean可使用的合格的增强器列表
 		List<Advisor> eligibleAdvisors = new ArrayList<>();
+		// 先进行引介增强的匹配区别于前置、后置、环绕、最终、异常等增强形式它们的增强对象都是针对方法级别的，
+		// 而引介增强，则是对类级别的增强，我们可以通过引介增强为目标类添加新的属性和方法，更为诱人的是，
+		// 这些新属性或方法是可以根据我们业务逻辑需求而动态变化的。
 		for (Advisor candidate : candidateAdvisors) {
-			// 如果增强器实现了IntroductionAdvisor接口，则使用canApply(candidate, clazz)来检验
+			// 引介增强的匹配
 			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {
 				eligibleAdvisors.add(candidate);
 			}
@@ -321,7 +326,7 @@ public abstract class AopUtils {
 		boolean hasIntroductions = !eligibleAdvisors.isEmpty();
 		for (Advisor candidate : candidateAdvisors) {
 			if (candidate instanceof IntroductionAdvisor) {
-				// already processed
+				// 如果引介增强就不在进行匹配
 				continue;
 			}
 			// aop和事务，都是使用canApply(candidate, clazz, hasIntroductions) 三个参数的方法来处理

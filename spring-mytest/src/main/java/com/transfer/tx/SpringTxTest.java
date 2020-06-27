@@ -1,7 +1,7 @@
 package com.transfer.tx;
 
 import com.transfer.tx.config.ConfigTx;
-import com.transfer.tx.service.UserService;
+import com.transfer.tx.service.IUserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -15,7 +15,7 @@ public class SpringTxTest {
         context.register(ConfigTx.class);
         context.refresh();
 
-        UserService userService = context.getBean(UserService.class);
+		IUserService userService = context.getBean(IUserService.class);
         int insert = userService.insert("zs", "456");
         System.out.println(insert);
         context.close();
