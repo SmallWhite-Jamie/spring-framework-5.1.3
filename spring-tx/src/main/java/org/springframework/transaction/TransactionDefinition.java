@@ -21,6 +21,7 @@ import java.sql.Connection;
 import org.springframework.lang.Nullable;
 
 /**
+ * 事务传播行为（propagation behavior）指的就是当一个事务方法被另一个事务方法调用时，这个事务方法应该如何进行。
  * Interface that defines Spring-compliant transaction properties.
  * Based on the propagation behavior definitions analogous to EJB CMT attributes.
  *
@@ -46,6 +47,7 @@ import org.springframework.lang.Nullable;
 public interface TransactionDefinition {
 
 	/**
+	 * 如果存在一个事务，则支持当前事务。如果没有事务则开启一个新的事务。
 	 * Support a current transaction; create a new one if none exists.
 	 * Analogous to the EJB transaction attribute of the same name.
 	 * <p>This is typically the default setting of a transaction definition,
@@ -54,6 +56,8 @@ public interface TransactionDefinition {
 	int PROPAGATION_REQUIRED = 0;
 
 	/**
+	 * 如果存在一个事务，支持当前事务。如果没有事务，则非事务的执行。
+	 *
 	 * Support a current transaction; execute non-transactionally if none exists.
 	 * Analogous to the EJB transaction attribute of the same name.
 	 * <p><b>NOTE:</b> For transaction managers with transaction synchronization,
@@ -75,6 +79,7 @@ public interface TransactionDefinition {
 	int PROPAGATION_SUPPORTS = 1;
 
 	/**
+	 * 如果已经存在一个事务，支持当前事务。如果没有一个活动的事务，则抛出异常。
 	 * Support a current transaction; throw an exception if no current transaction
 	 * exists. Analogous to the EJB transaction attribute of the same name.
 	 * <p>Note that transaction synchronization within a {@code PROPAGATION_MANDATORY}
@@ -83,6 +88,7 @@ public interface TransactionDefinition {
 	int PROPAGATION_MANDATORY = 2;
 
 	/**
+	 * 这种传播方式必须使用JtaTransactionManager作为事务管理器，会开启一个新的事务。如果一个事务已经存在，则先将这个存在的事务挂起。
 	 * Create a new transaction, suspending the current transaction if one exists.
 	 * Analogous to the EJB transaction attribute of the same name.
 	 * <p><b>NOTE:</b> Actual transaction suspension will not work out-of-the-box
@@ -98,6 +104,7 @@ public interface TransactionDefinition {
 	int PROPAGATION_REQUIRES_NEW = 3;
 
 	/**
+	 * 这种传播方式必须使用JtaTransactionManager作为事务管理器，非事务地执行，并挂起任何存在的事务。
 	 * Do not support a current transaction; rather always execute non-transactionally.
 	 * Analogous to the EJB transaction attribute of the same name.
 	 * <p><b>NOTE:</b> Actual transaction suspension will not work out-of-the-box
@@ -113,6 +120,7 @@ public interface TransactionDefinition {
 	int PROPAGATION_NOT_SUPPORTED = 4;
 
 	/**
+	 * 总是非事务地执行，如果存在一个活动事务，则抛出异常。
 	 * Do not support a current transaction; throw an exception if a current transaction
 	 * exists. Analogous to the EJB transaction attribute of the same name.
 	 * <p>Note that transaction synchronization is <i>not</i> available within a
@@ -121,6 +129,7 @@ public interface TransactionDefinition {
 	int PROPAGATION_NEVER = 5;
 
 	/**
+	 * 如果一个活动的事务存在，则运行在一个嵌套的事务中。如果没有活动事务, 则按TransactionDefinition.PROPAGATION_REQUIRED 属性执行。
 	 * Execute within a nested transaction if a current transaction exists,
 	 * behave like {@link #PROPAGATION_REQUIRED} otherwise. There is no
 	 * analogous feature in EJB.
