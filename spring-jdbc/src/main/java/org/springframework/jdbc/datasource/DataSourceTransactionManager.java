@@ -259,6 +259,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 		try {
 			if (!txObject.hasConnectionHolder() ||
 					txObject.getConnectionHolder().isSynchronizedWithTransaction()) {
+				// 获取新的连接,并设置到 ConnectionHolder 中
 				Connection newCon = obtainDataSource().getConnection();
 				if (logger.isDebugEnabled()) {
 					logger.debug("Acquired Connection [" + newCon + "] for JDBC transaction");
@@ -267,6 +268,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			}
 
 			txObject.getConnectionHolder().setSynchronizedWithTransaction(true);
+			//通过 ConnectionHolder 得到一个数据库连接对象
 			con = txObject.getConnectionHolder().getConnection();
 
 			Integer previousIsolationLevel = DataSourceUtils.prepareConnectionForTransaction(con, definition);

@@ -127,6 +127,9 @@ public @interface Transactional {
 	boolean readOnly() default false;
 
 	/**
+	 *
+	 * 可以声明一个或者多个异常回滚类，每个异常类必须继承自Throwable，
+	 * 如果不声明默认回滚 RuntimeException 和 Error，非检查异常exception不回滚
 	 * Defines zero (0) or more exception {@link Class classes}, which must be
 	 * subclasses of {@link Throwable}, indicating which exception types must cause
 	 * a transaction rollback.

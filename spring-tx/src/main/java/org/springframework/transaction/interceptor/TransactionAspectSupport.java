@@ -555,6 +555,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			}
 			if (txInfo.transactionAttribute != null && txInfo.transactionAttribute.rollbackOn(ex)) {
 				try {
+					// 满足回滚条件进行事务回滚
 					txInfo.getTransactionManager().rollback(txInfo.getTransactionStatus());
 				}
 				catch (TransactionSystemException ex2) {
@@ -568,7 +569,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			}
 			else {
-				// We don't roll back on this exception.
+				// 不需要回滚的异常进行事务提交
 				// Will still roll back if TransactionStatus.isRollbackOnly() is true.
 				try {
 					txInfo.getTransactionManager().commit(txInfo.getTransactionStatus());

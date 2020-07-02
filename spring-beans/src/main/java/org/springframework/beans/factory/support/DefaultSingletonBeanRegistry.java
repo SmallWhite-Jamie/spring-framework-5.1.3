@@ -70,19 +70,21 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements SingletonBeanRegistry {
 
-	/** 保存BeanName和bean的实例（此时对象已经完成了属性注入）. */
+	/** 保存BeanName和bean的实例（此时对象已经完成了属性注入）. 就是我们常说的一级缓存单例缓存池*/
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 
-	/** 保存对象的BeanName和创建bean的工厂AbstractAutowireCapableBeanFactory(ObjectFactory)，（对象的构造函数创建完就会加入） */
+	/** 保存对象的BeanName和创建bean的工厂AbstractAutowireCapableBeanFactory(ObjectFactory)，
+	 * （对象的构造函数创建完就会加入）可以通过 getObject() 获取未初始化问完的实例对象，就是我们常说的三级缓存
+	 * */
 	private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
 
-	/** 保存对象BeanName和对象的早期实例（ObjectFactory#getObject得到的对象）（此时对象还没注入属性），此时可以作为对象填充依赖。 */
+	/** 保存对象BeanName和对象的早期实例（ObjectFactory#getObject得到的对象）（此时对象还没注入属性），此时可以作为对象填充依赖。就是二级缓存 */
 	private final Map<String, Object> earlySingletonObjects = new HashMap<>(16);
 
-	/** Set of registered singletons, containing the bean names in registration order. */
+	/** 用来记录已经创建处理的bean,保存bean的名称 */
 	private final Set<String> registeredSingletons = new LinkedHashSet<>(256);
 
-	/** 保存正在常见的对象的BeanName，在创建对象之前就会把对象的beanName保存起来。 */
+	/** 保存正在创建的对象的BeanName，在创建对象之前就会把对象的beanName保存起来。 */
 	private final Set<String> singletonsCurrentlyInCreation = Collections.newSetFromMap(new ConcurrentHashMap<>(16));
 
 	/** Names of beans currently excluded from in creation checks. */
@@ -177,16 +179,23 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
+		// 从一级缓存(单例缓存池)中获bean
 		Object singletonObject = this.singletonObjects.get(beanName);
+		// 一级缓存不存在并且bean处于正在创建状态
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			synchronized (this.singletonObjects) {
+				// 二级缓存中查找，此时的bean实例化完但未完成初始化
 				singletonObject = this.earlySingletonObjects.get(beanName);
+				// 二级缓存不存在并且允许常见早期引用就去查找三级缓存
 				if (singletonObject == null && allowEarlyReference) {
+					// 三级缓存中通过 singletonFactory.getObject();获取bean的早期引用并加入到二级缓存
 					// 循环依赖的bean B，在这里可以获取正在创建的 bean A的早期对象
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 					if (singletonFactory != null) {
 						singletonObject = singletonFactory.getObject();
+						// 加入二级缓存
 						this.earlySingletonObjects.put(beanName, singletonObject);
+						// 从三级缓存中移除
 						this.singletonFactories.remove(beanName);
 					}
 				}

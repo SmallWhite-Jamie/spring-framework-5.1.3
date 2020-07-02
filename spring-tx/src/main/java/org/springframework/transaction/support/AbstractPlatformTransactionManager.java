@@ -345,28 +345,30 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		boolean debugEnabled = logger.isDebugEnabled();
 
 		if (definition == null) {
-			// Use defaults if no transaction definition given.
+			// 如果未提供事务定义，则使用默认的事务定义
 			definition = new DefaultTransactionDefinition();
 		}
 
 		if (isExistingTransaction(transaction)) {
-			// Existing transaction found -> check propagation behavior to find out how to behave.
+			// 如果事务已经存在，根据事务传播行为设置，进行事务处理
 			return handleExistingTransaction(definition, transaction, debugEnabled);
 		}
 
-		// Check definition settings for new transaction.
+		// 检查事务超时设置
 		if (definition.getTimeout() < TransactionDefinition.TIMEOUT_DEFAULT) {
 			throw new InvalidTimeoutException("Invalid transaction timeout", definition.getTimeout());
 		}
 
-		// No existing transaction found -> check propagation behavior to find out how to proceed.
+		// 如果不存在事务，根据事务传播行为进行事务创建或者抛出异常
 		if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_MANDATORY) {
+			// PROPAGATION_MANDATORY 不存在事务，抛出异常
 			throw new IllegalTransactionStateException(
 					"No existing transaction found for transaction marked with propagation 'mandatory'");
 		}
 		else if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRED ||
 				definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRES_NEW ||
 				definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NESTED) {
+			// 事务挂起策略
 			SuspendedResourcesHolder suspendedResources = suspend(null);
 			if (debugEnabled) {
 				logger.debug("Creating new transaction with name [" + definition.getName() + "]: " + definition);
@@ -375,6 +377,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				boolean newSynchronization = (getTransactionSynchronization() != SYNCHRONIZATION_NEVER);
 				DefaultTransactionStatus status = newTransactionStatus(
 						definition, transaction, true, newSynchronization, debugEnabled, suspendedResources);
+				// 开启一个事务
 				doBegin(transaction, definition);
 				prepareSynchronization(status, definition);
 				return status;

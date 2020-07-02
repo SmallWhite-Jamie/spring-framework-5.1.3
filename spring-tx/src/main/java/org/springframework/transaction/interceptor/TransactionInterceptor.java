@@ -31,6 +31,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.transaction.PlatformTransactionManager;
 
 /**
+ * 事务拦截器,是个MethodInterceptor环绕通知，被事务拦截的方法最终都会执行到此增强器上
  * AOP Alliance MethodInterceptor for declarative transaction
  * management using the common Spring transaction infrastructure
  * ({@link org.springframework.transaction.PlatformTransactionManager}).
@@ -86,6 +87,12 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 	}
 
 
+	/**
+	 * invoke 方法，拦截的的入口
+	 * @param invocation the method invocation joinpoint
+	 * @return
+	 * @throws Throwable
+	 */
 	@Override
 	@Nullable
 	public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -94,7 +101,7 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 		// as well as the method, which may be from an interface.
 		Class<?> targetClass = (invocation.getThis() != null ? AopUtils.getTargetClass(invocation.getThis()) : null);
 
-		// Adapt to TransactionAspectSupport's invokeWithinTransaction...
+		// 父类事务模板方法调用目标方法
 		return invokeWithinTransaction(invocation.getMethod(), targetClass, invocation::proceed);
 	}
 
