@@ -471,7 +471,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			}
 		}
 
-		// Assumably PROPAGATION_SUPPORTS or PROPAGATION_REQUIRED.
+		// 上面的传播行为都不满足可能是：PROPAGATION_REQUIRED(默认级别) 或者 PROPAGATION_SUPPORTS .
 		if (debugEnabled) {
 			logger.debug("Participating in existing transaction");
 		}
@@ -495,6 +495,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			}
 		}
 		boolean newSynchronization = (getTransactionSynchronization() != SYNCHRONIZATION_NEVER);
+		// 使用已经存在的事务
 		return prepareTransactionStatus(definition, transaction, false, newSynchronization, debugEnabled, null);
 	}
 
