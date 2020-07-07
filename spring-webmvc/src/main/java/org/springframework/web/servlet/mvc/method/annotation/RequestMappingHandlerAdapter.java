@@ -781,22 +781,24 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		ModelAndView mav;
 		checkRequest(request);
 
-		// Execute invokeHandlerMethod in synchronized block if required.
+		// 是否需要 session 同步执行，如果需要保证用户能够在多次请求中正确的访问同一个 session ，就要将 synchronizeOnSession 设置为 TRUE 。
 		if (this.synchronizeOnSession) {
 			HttpSession session = request.getSession(false);
 			if (session != null) {
+				// 获取一把同步锁 mutex
 				Object mutex = WebUtils.getSessionMutex(session);
 				synchronized (mutex) {
+					// 同步代码块中执行方法调用
 					mav = invokeHandlerMethod(request, response, handlerMethod);
 				}
 			}
 			else {
-				// No HttpSession available -> no mutex necessary
+				// 如果没有session就无需加锁执行
 				mav = invokeHandlerMethod(request, response, handlerMethod);
 			}
 		}
 		else {
-			// No synchronization on session demanded at all...
+			// 不需要同步执行 synchronizeOnSession = false
 			mav = invokeHandlerMethod(request, response, handlerMethod);
 		}
 

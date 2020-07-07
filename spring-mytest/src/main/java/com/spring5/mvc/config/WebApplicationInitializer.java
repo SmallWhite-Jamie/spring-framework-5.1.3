@@ -5,6 +5,10 @@ import com.spring5.mvc.config.ServletConfig;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
+
 /**
  * WebApplicationInitializer
  *
@@ -38,5 +42,6 @@ public class WebApplicationInitializer extends AbstractAnnotationConfigDispatche
 	protected String[] getServletMappings() {
 		return new String[] { "/" };
 	}
+
 
 }

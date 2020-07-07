@@ -1,8 +1,10 @@
 package com.spring5.mvc.controller;
 
+import com.spring5.mvc.config.MyInterceptor;
 import com.spring5.mvc.converters.MyHttpMessageConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
@@ -21,4 +23,11 @@ public class MyWebMvcConfigurer implements WebMvcConfigurer {
 		// 此处配置在默认消息转换器基础上添加新的转换器
 		converters.add(new MyHttpMessageConverter());
 	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new MyInterceptor()).addPathPatterns("/**");
+	}
+
+
 }

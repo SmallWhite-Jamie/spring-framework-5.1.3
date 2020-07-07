@@ -20,6 +20,13 @@ public class DemoController {
 
 	private static final Log log = LogFactory.getLog(DemoController.class);
 
+
+	@RequestMapping("request")
+	public Teacher request(@RequestBody Teacher teacher) {
+		log.info(teacher);
+		return teacher;
+	}
+
 	@RequestMapping("demo")
 	public Teacher demo() {
 		Teacher teacher = new Teacher();

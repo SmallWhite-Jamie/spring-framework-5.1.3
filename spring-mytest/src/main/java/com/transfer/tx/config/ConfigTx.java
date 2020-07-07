@@ -33,7 +33,7 @@ public class ConfigTx {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUsername("root");
         dataSource.setPassword("admin");
-        dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/test");
+        dataSource.setUrl("jdbc:mysql://125.45.191.51:9032/sharp_sword");
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         return  dataSource;
     }
