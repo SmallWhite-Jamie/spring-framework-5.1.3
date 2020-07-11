@@ -16,15 +16,6 @@
 
 package org.springframework.web.servlet.config.annotation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.function.Predicate;
-import javax.servlet.ServletContext;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.BeanInitializationException;
@@ -97,6 +88,15 @@ import org.springframework.web.servlet.resource.ResourceUrlProviderExposingInter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.ViewResolverComposite;
 import org.springframework.web.util.UrlPathHelper;
+
+import javax.servlet.ServletContext;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * This is the main class providing the configuration behind the MVC Java config.
@@ -267,6 +267,8 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 
 
 	/**
+	 * **重点类**
+	 * 创建一个 RequestMappingHandlerMapping 对象，用来解析映射 @Controller 标注的请求方法信息
 	 * Return a {@link RequestMappingHandlerMapping} ordered at 0 for mapping
 	 * requests to annotated controllers.
 	 */

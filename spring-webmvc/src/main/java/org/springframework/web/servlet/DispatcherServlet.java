@@ -932,13 +932,16 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 		}
 
-		// Make framework objects available to handlers and view objects.
+		// 设置一些框架的 request attribute，web应用上下文、国际化localeResolver等
 		request.setAttribute(WEB_APPLICATION_CONTEXT_ATTRIBUTE, getWebApplicationContext());
 		request.setAttribute(LOCALE_RESOLVER_ATTRIBUTE, this.localeResolver);
 		request.setAttribute(THEME_RESOLVER_ATTRIBUTE, this.themeResolver);
 		request.setAttribute(THEME_SOURCE_ATTRIBUTE, getThemeSource());
 
+		// 重定向时FlashMap传递数据.
 		if (this.flashMapManager != null) {
+			// 每次处理请求时，都会先判断一下FlashMap中是否有数据,如果有就先设置到 inputFlashMap里面，
+			// 也就是保存上次转发过来的属性，再设置到Model里面
 			FlashMap inputFlashMap = this.flashMapManager.retrieveAndUpdate(request, response);
 			if (inputFlashMap != null) {
 				request.setAttribute(INPUT_FLASH_MAP_ATTRIBUTE, Collections.unmodifiableMap(inputFlashMap));
@@ -1016,20 +1019,24 @@ public class DispatcherServlet extends FrameworkServlet {
 			Exception dispatchException = null;
 
 			try {
+				// 如果是文件上传请求则进行特殊处理,对request进行包装，例如 StandardMultipartHttpServletRequest
 				processedRequest = checkMultipart(request);
 				multipartRequestParsed = (processedRequest != request);
 
-				// 为当前请求获取合适的处理执行器链
+				// 1、为当前请求获取合适的处理执行器链
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) {
+					// 如果没有获取到对应的handler则往response中写入错误信息
 					noHandlerFound(processedRequest, response);
 					return;
 				}
 
-				// 为当前请求获取合适的处理器适配器, RequestMappingHandlerAdapter
+				// 2、为当前请求获取合适的处理器适配器, RequestMappingHandlerAdapter
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
-				// Process last-modified header, if supported by the handler.
+				// 处理 last-modified 情况
+				// Last-Modified: 是一个响应首部，其中包含源头服务器认定的资源做出修改的日期及时间。
+				// 它通常被用作一个验证器来判断接收到的或者存储的资源是否彼此一致
 				String method = request.getMethod();
 				boolean isGet = "GET".equals(method);
 				if (isGet || "HEAD".equals(method)) {
@@ -1039,19 +1046,21 @@ public class DispatcherServlet extends FrameworkServlet {
 					}
 				}
 
-				// 所有 HandlerInterceptor 拦截器在这里被执行，如果有一个拦截器返回false将不再往下执行
+				// 3、所有 HandlerInterceptor 拦截器的 preHandle 在这里被执行，如果有一个拦截器返回false将不再往下执行
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					return;
 				}
 
-				// 实际调用请求对应的方法，返回ModelAndView对象
+				// 4、实际调用请求对应的方法，返回ModelAndView对象
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
 					return;
 				}
 
+				// 如果函数调用没有返回视图则使用默认的
 				applyDefaultViewName(processedRequest, mv);
+				// 6、执行拦截器的 postHandle 方法
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
 			catch (Exception ex) {
@@ -1062,6 +1071,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				// making them available for @ExceptionHandler methods and other scenarios.
 				dispatchException = new NestedServletException("Handler dispatch failed", err);
 			}
+			// 7、处理返回结果
 			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
 		}
 		catch (Exception ex) {
@@ -1238,6 +1248,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
 		if (this.handlerMappings != null) {
 			for (HandlerMapping mapping : this.handlerMappings) {
+				// 根据request获取对应的handler，进而得到对应的HandlerExecutionChain
 				HandlerExecutionChain handler = mapping.getHandler(request);
 				if (handler != null) {
 					return handler;

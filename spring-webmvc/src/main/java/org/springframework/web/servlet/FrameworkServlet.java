@@ -1000,9 +1000,11 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	protected final void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		// 记录开始时间
 		long startTime = System.currentTimeMillis();
 		Throwable failureCause = null;
 
+		// 记录当前线程的信息,内部使用 ThreadLocal 实现
 		LocaleContext previousLocaleContext = LocaleContextHolder.getLocaleContext();
 		LocaleContext localeContext = buildLocaleContext(request);
 
@@ -1028,11 +1030,13 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 
 		finally {
+			// 清除线程绑定信息
 			resetContextHolders(request, previousLocaleContext, previousAttributes);
 			if (requestAttributes != null) {
 				requestAttributes.requestCompleted();
 			}
 			logResult(request, response, failureCause, asyncManager);
+			//发送 ServletRequestHandledEvent 事件通知
 			publishRequestHandledEvent(request, response, startTime, failureCause);
 		}
 	}
