@@ -1,13 +1,10 @@
 package com.spring5.mvc.config;
 
-import com.spring5.mvc.config.RootConfig;
-import com.spring5.mvc.config.ServletConfig;
+import com.spring5.mvc.filter.TestFilter;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
 
 /**
  * WebApplicationInitializer
@@ -30,12 +27,12 @@ public class WebApplicationInitializer extends AbstractAnnotationConfigDispatche
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class[] { RootConfig.class };
+		return new Class<?>[] { RootConfig.class };
 	}
 
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-		return new Class[] {ServletConfig.class};
+		return new Class<?>[] {ServletConfig.class};
 	}
 
 	@Override
@@ -43,5 +40,9 @@ public class WebApplicationInitializer extends AbstractAnnotationConfigDispatche
 		return new String[] { "/" };
 	}
 
+	@Override
+	protected Filter[] getServletFilters() {
+		return new Filter[] { new TestFilter() };
+	}
 
 }
