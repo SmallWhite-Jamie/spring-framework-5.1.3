@@ -196,6 +196,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	@Override
 	public void afterPropertiesSet() {
+		// 重点方法，解析controller中的处理映射方法信息，为容器启动成功后，请求映射查找做准备
 		initHandlerMethods();
 	}
 
@@ -208,6 +209,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	protected void initHandlerMethods() {
 		for (String beanName : getCandidateBeanNames()) {
 			if (!beanName.startsWith(SCOPED_TARGET_NAME_PREFIX)) {
+				// 遍历解析符合条件的类
 				processCandidateBean(beanName);
 			}
 		}
@@ -248,7 +250,10 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 				logger.trace("Could not resolve type for bean '" + beanName + "'", ex);
 			}
 		}
+		// beanType 不为空并且，是符合条件的可以处理的类型，具体实现有不同子类决定
+		// 例如：RequestMappingHandlerMapping，标注有 @Controller 或者 @RequestMapping注解
 		if (beanType != null && isHandler(beanType)) {
+			// 检测满足条件的方法，进行映射处理注册
 			detectHandlerMethods(beanName);
 		}
 	}
@@ -267,6 +272,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			Map<Method, T> methods = MethodIntrospector.selectMethods(userType,
 					(MethodIntrospector.MetadataLookup<T>) method -> {
 						try {
+							// 获取某个方法的映射信息，发挥对应的 RequestMappingInfo 对象
 							return getMappingForMethod(method, userType);
 						}
 						catch (Throwable ex) {
@@ -277,6 +283,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			if (logger.isTraceEnabled()) {
 				logger.trace(formatMappings(userType, methods));
 			}
+			// 循环将所有满足条件的方法，URL路径信息和类方法信息进行映射，保存在 MappingRegistry mappingRegistry 属性中
 			methods.forEach((method, mapping) -> {
 				Method invocableMethod = AopUtils.selectInvocableMethod(method, userType);
 				registerHandlerMethod(handler, invocableMethod, mapping);

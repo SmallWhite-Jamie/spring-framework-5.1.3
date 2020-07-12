@@ -267,8 +267,8 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 
 
 	/**
-	 * **重点类**
-	 * 创建一个 RequestMappingHandlerMapping 对象，用来解析映射 @Controller 标注的请求方法信息
+	 * ** 重点类 **,其中重点方法 ** afterPropertiesSet **
+	 * 创建一个 RequestMappingHandlerMapping 对象，用来解析映射 @Controller 标注的请求方法信息，是目前开发常用的注解形式配置请求映射
 	 * Return a {@link RequestMappingHandlerMapping} ordered at 0 for mapping
 	 * requests to annotated controllers.
 	 */
@@ -366,6 +366,7 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	}
 
 	/**
+	 * 创建一个全局的请求路径匹配器，通过路径匹配 HandlerMapping，默认用于匹配Ant风格的路径 “/user/*”
 	 * Return a global {@link PathMatcher} instance for path matching
 	 * patterns in {@link HandlerMapping HandlerMappings}.
 	 * This instance can be configured using the {@link PathMatchConfigurer}
@@ -379,6 +380,7 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	}
 
 	/**
+	 * 创建一个全局的URL路径帮助类，处理路径相关的操作
 	 * Return a global {@link UrlPathHelper} instance for path matching
 	 * patterns in {@link HandlerMapping HandlerMappings}.
 	 * This instance can be configured using the {@link PathMatchConfigurer}
@@ -392,6 +394,7 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	}
 
 	/**
+	 * 内容协商管理器ContentNegotiationManager，用于判断一个请求的媒体类型MediaType列表
 	 * Return a {@link ContentNegotiationManager} instance to use to determine
 	 * requested {@linkplain MediaType media types} in a given request.
 	 */
@@ -435,6 +438,8 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	}
 
 	/**
+	 * 创建一个 SimpleUrlHandlerMapping，直接通过简单的url匹配的方式将其映射到一个处理器，
+	 * 在创建对象时候将url和处理类的映射设置好,例如：map形式、Properties形式
 	 * Return a handler mapping ordered at 1 to map URL paths directly to
 	 * view names. To configure view controllers, override
 	 * {@link #addViewControllers}.
@@ -464,6 +469,7 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	}
 
 	/**
+	 * 创建一个BeanNameUrlHandlerMapping对象，通过实现Controller接口，按照bean name的方式进行映射处理
 	 * Return a {@link BeanNameUrlHandlerMapping} ordered at 2 to map URL
 	 * paths to controller bean names.
 	 */
