@@ -17,6 +17,11 @@
 package org.springframework.context;
 
 /**
+ *
+ *
+ * 在spring上下文 refresh() 之前调用，通常被用作web应用在web容器初始化时候使用，可参考例子：FrameworkServlet
+ * org.springframework.web.servlet.FrameworkServlet#applyInitializers(org.springframework.context.ConfigurableApplicationContext)
+ * 通过子类重写去做一些初始化工作
  * Callback interface for initializing a Spring {@link ConfigurableApplicationContext}
  * prior to being {@linkplain ConfigurableApplicationContext#refresh() refreshed}.
  *
