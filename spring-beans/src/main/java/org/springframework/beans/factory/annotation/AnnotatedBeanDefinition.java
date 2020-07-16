@@ -22,7 +22,7 @@ import org.springframework.core.type.MethodMetadata;
 import org.springframework.lang.Nullable;
 
 /**
- * 继承并扩展BeanDefinition，用于获取注 解Bean的相关描述及定义信息。
+ * 继承并扩展BeanDefinition，用于获取注解Bean的相关描述及定义信息。
  * Extended {@link org.springframework.beans.factory.config.BeanDefinition}
  * interface that exposes {@link org.springframework.core.type.AnnotationMetadata}
  * about its bean class - without requiring the class to be loaded yet.

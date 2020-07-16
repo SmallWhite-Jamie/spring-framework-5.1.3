@@ -66,7 +66,8 @@ import static org.springframework.context.annotation.AnnotationConfigUtils.CONFI
 
 /**
  * <pre>
- *     BeanFactoryPostProcessor 是一个BeanFactory的后置处理器，因此它的主要功能是参与BeanFactory的建造，
+ *     实现了BeanDefinitionRegistryPostProcessor是一个BeanFactory的后置处理器，因此它的主要功能是参与BeanFactory的建造，
+ *     会在常规 BeanFactoryPostProcessor 之前执行
  *     在这个类中，会解析加了@Configuration的配置类，还会解析@ComponentScan、@ComponentScans注解扫描的包，
  *     以及解析@Import等注解。
  * </pre>
