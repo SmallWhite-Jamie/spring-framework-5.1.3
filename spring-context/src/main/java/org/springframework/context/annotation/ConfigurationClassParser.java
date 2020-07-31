@@ -155,6 +155,7 @@ class ConfigurationClassParser {
 		this.registry = registry;
 		this.componentScanParser = new ComponentScanAnnotationParser(
 				environment, resourceLoader, componentScanBeanNameGenerator, registry);
+		// 使用ConditionEvaluator进行条件注解的判断，进而决定目标对象是否需要注入容器，在springboot中被大量使用
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, resourceLoader);
 	}
 

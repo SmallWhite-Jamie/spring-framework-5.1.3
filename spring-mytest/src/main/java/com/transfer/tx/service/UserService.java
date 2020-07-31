@@ -7,6 +7,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author lizheng
  * @date: 0:00 2019/01/06
@@ -35,6 +39,131 @@ public class UserService implements IUserService {
 	public int insert2(int id, String username, String password) {
 		template.update("insert into users (id, username, password) values (?,?,?)", id, username, password);
 		return 1;
+	}
+
+	@Override
+	public int isolationInsert() {
+		System.out.println("处理插入业务");
+		template.update("insert into users (id, username, password) values (?,?,?)", "99", "isolationInsert", "456");
+		try {
+			TimeUnit.SECONDS.sleep(10);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println("业务处理结束");
+		return 0;
+	}
+
+	@Override
+	public int isolationSelectAndUpdate() {
+		System.out.println("开始执行查询睡眠");
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println("睡眠结束开始查询");
+		Map<String, Object> stringObjectMap = template.queryForMap("select * from users where id = ? for update", "99");
+		System.out.println(stringObjectMap);
+		int update = template.update("update users set username = ? where id = ?", "456841asdas", "99");
+		System.out.println(update);
+		return 99;
+	}
+
+	@Override
+	public int repeatableRead() {
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Map<String, Object> stringObjectMap = template.queryForMap("select * from users where id = ?", "99");
+		System.out.println("一次读取结果："+stringObjectMap);
+		try {
+			TimeUnit.SECONDS.sleep(4);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Map<String, Object> stringObjectMap2 = template.queryForMap("select * from users where id = ?", "99");
+		System.out.println("二次读取结果："+stringObjectMap2);
+
+		return 0;
+	}
+
+	@Override
+	public int repeatableReadUpdate() {
+		System.out.println("第一次更新");
+		template.update("update users set username = ? where id = ?", "repeatableReadUpdate", "99");
+		try {
+			TimeUnit.SECONDS.sleep(2);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println("第二次更新");
+		template.update("update users set username = ? where id = ?", "222222", "99");
+		return 0;
+	}
+
+	@Override
+	public int repeatableReadInsertR() {
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Map<String, Object> stringObjectMap = template.queryForMap("select * from users where id = ?", "99");
+		System.out.println("一次读取结果："+stringObjectMap);
+		try {
+			TimeUnit.SECONDS.sleep(4);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Map<String, Object> stringObjectMap2 = template.queryForMap("select * from users where id = ?", "99");
+		System.out.println("一次读取结果："+stringObjectMap2);
+		if (stringObjectMap2.get("username").equals("123")) {
+			template.update("insert into users (id, username, password) values (?,?,?)", "100", "100", "456");
+		} else {
+			System.out.println("结果被修改");
+		}
+
+		return 0;
+	}
+
+	@Override
+	public int repeatableReadInsertW() {
+		try {
+			TimeUnit.SECONDS.sleep(2);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println("第二次更新");
+		template.update("update users set username = ? where id = ?", "222222", "99");
+		template.update("insert into users (id, username, password) values (?,?,?)", "100", "100", "456");
+		return 0;
+	}
+
+	@Override
+	public void gapLockR() {
+		List<Map<String, Object>> maps = template.queryForList("select * from users where username = ? for update ", "100");
+		System.out.println("间隙锁测试R--："+maps);
+		try {
+			TimeUnit.SECONDS.sleep(5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println("间隙锁测试R结束--");
+	}
+
+	@Override
+	public void gapLockW() {
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println("间隙锁测试W开始");
+		template.update("insert into users (username, password) values (?,?)", "100", "456");
+		System.out.println("间隙锁测试W结束");
 	}
 
 }

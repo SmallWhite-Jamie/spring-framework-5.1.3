@@ -20,6 +20,7 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
+ * 用于匹配组件是否有资格被容器注册, springboot中大量自动化配置条件注入，依赖此接口完成的
  * A single {@code condition} that must be {@linkplain #matches matched} in order
  * for a component to be registered.
  *
