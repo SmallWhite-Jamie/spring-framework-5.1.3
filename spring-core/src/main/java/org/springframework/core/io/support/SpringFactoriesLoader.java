@@ -16,18 +16,8 @@
 
 package org.springframework.core.io.support;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.io.UrlResource;
 import org.springframework.lang.Nullable;
@@ -39,7 +29,22 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 /**
+ *
+ * Spring 的 SpringFactoriesLoader工厂的加载机制类似java提供的SPI机制一样，是Spring提供的一种加载方式。
+ * 只需要在classpath路径下新建一个文件META-INF/spring.factories，
+ * 并在里面按照Properties格式填写好借口和实现类即可通过SpringFactoriesLoader来实例化相应的Bean。
+ * 其中key可以是接口、注解、或者抽象类的全名。value为相应的实现类，当存在多个实现类时，用“,”进行分割。
+ *
  * General purpose factory loading mechanism for internal use within the framework.
  *
  * <p>{@code SpringFactoriesLoader} {@linkplain #loadFactories loads} and instantiates
