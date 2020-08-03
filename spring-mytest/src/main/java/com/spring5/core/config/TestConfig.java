@@ -1,6 +1,8 @@
 package com.spring5.core.config;
 
 import com.spring5.core.bean.Stu;
+import com.spring5.core.importselector.MyDeferredImportSelector;
+import com.spring5.core.importselector.MyImportSelector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Conditional;
@@ -19,20 +21,33 @@ import org.springframework.stereotype.Controller;
 		@ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Controller.class),
 		@ComponentScan.Filter(type = FilterType.CUSTOM, classes = MyTypeFilter.class)
 })
-@Import(MyImportBeanDefinitionRegistrar.class)
-public class TestConfig {
+@Import({MyImportBeanDefinitionRegistrar.class, MyImportSelector.class, MyDeferredImportSelector.class})
+public class TestConfig extends AConfig {
 
 //	@Scope("prototype")
 //	@Lazy
-	@Bean("student")
-	public Stu stu() {
-		Stu stu= new Stu();
-		stu.setName("zs");
-		stu.setSex("男");
-		return stu;
+
+
+	static class D {
+		public D() {
+			System.out.println("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDS----------------------------------------------------");
+		}
 	}
 
+	static class Inner {
 
+		static class InnerInner {
+			@Bean()
+			public D d() {
+				return new D();
+			}
+		}
+
+//		@Bean()
+//		public D d() {
+//			return new D();
+//		}
+	}
 	//
 
 	@Conditional(StuCondition.class)

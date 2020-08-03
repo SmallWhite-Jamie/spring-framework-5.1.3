@@ -16,10 +16,10 @@ public class Test {
 //		Stu bean = context.getBean(Stu.class);
 //		Stu bean2 = context.getBean(Stu.class);
 //		System.out.println(bean == bean2);
-		String[] names = context.getBeanDefinitionNames();
-		for (String name : names) {
-			System.out.println(name);
-		}
+//		String[] names = context.getBeanDefinitionNames();
+//		for (String name : names) {
+//			System.out.println(name);
+//		}
 		// com.spring5.core.bean.Teacher
 //		Object myFactoryBean = context.getBean("myFactoryBean");
 		// com.spring5.core.config.MyFactoryBean

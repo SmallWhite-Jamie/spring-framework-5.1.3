@@ -183,7 +183,7 @@ class ConfigurationClassParser {
 						"Failed to parse configuration class [" + bd.getBeanClassName() + "]", ex);
 			}
 		}
-
+		// 区别于ImportSelector，DeferredImportSelector 延时导入在这里执行，此时@Configuration逻辑已经执行完
 		this.deferredImportSelectorHandler.process();
 	}
 
@@ -263,10 +263,11 @@ class ConfigurationClassParser {
 
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
+			// 一个配置类的成员类(配置类内嵌套定义的类)也可能适配类，先遍历这些成员配置类，调用processConfigurationClass处理它们;
 			processMemberClasses(configClass, sourceClass);
 		}
 
-		// Process any @PropertySource annotations
+		// 处理配置类上的注解@PropertySources、PropertySource
 		for (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), PropertySources.class,
 				org.springframework.context.annotation.PropertySource.class)) {
@@ -279,7 +280,7 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// Process any @ComponentScan annotations
+		// 处理配置类上的注解@ComponentScans、@ComponentScan
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
 		if (!componentScans.isEmpty() &&
@@ -301,10 +302,10 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// Process any @Import annotations
+		// 处理配置类上的注解@Import
 		processImports(configClass, sourceClass, getImports(sourceClass), true);
 
-		// Process any @ImportResource annotations
+		// 处理配置类上的注解@ImportResource
 		AnnotationAttributes importResource =
 				AnnotationConfigUtils.attributesFor(sourceClass.getMetadata(), ImportResource.class);
 		if (importResource != null) {
@@ -316,16 +317,16 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// Process individual @Bean methods
+		// 处理配置类上的注解@Bean 标识的方法
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
 		for (MethodMetadata methodMetadata : beanMethods) {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 		}
 
-		// Process default methods on interfaces
+		// 处理配置类所实现接口的缺省方法
 		processInterfaces(configClass, sourceClass);
 
-		// Process superclass, if any
+		// 检查父类是否需要处理，如果父类需要处理返回父类，否则返回null
 		if (sourceClass.getMetadata().hasSuperClass()) {
 			String superclass = sourceClass.getMetadata().getSuperClassName();
 			if (superclass != null && !superclass.startsWith("java") &&
@@ -336,7 +337,7 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// No superclass -> processing is complete
+		// 处理完成返回null，跳出递归
 		return null;
 	}
 

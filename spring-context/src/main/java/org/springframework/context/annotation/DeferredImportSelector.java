@@ -22,6 +22,10 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
 
 /**
+ *
+ * DeferredImportSelector扩展自ImportSelector接口，在所有 @Configuration bean之后运行
+ * 提供 getImportGroup 方法，可以跨不同的选择器提供额外的排序和过滤逻辑
+ *
  * A variation of {@link ImportSelector} that runs after all {@code @Configuration} beans
  * have been processed. This type of selector can be particularly useful when the selected
  * imports are {@code @Conditional}.
