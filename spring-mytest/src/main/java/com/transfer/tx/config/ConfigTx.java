@@ -8,7 +8,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Role;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
@@ -27,7 +26,7 @@ import javax.sql.DataSource;
  * @Description: ConfigTx
  */
 @Configuration
-@EnableAspectJAutoProxy(exposeProxy = true)
+//@EnableAspectJAutoProxy(exposeProxy = true)
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"com.transfer.tx"})
 @MapperScan(basePackages = "com.transfer.tx.mapper")
