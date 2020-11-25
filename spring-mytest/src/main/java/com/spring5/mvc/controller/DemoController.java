@@ -22,7 +22,7 @@ public class DemoController {
 
 
 	@RequestMapping("request")
-	public Teacher request(@RequestBody Teacher teacher) {
+	public Teacher request(Teacher teacher) {
 		log.info(teacher);
 		return teacher;
 	}
@@ -30,7 +30,9 @@ public class DemoController {
 	@RequestMapping("demo")
 	public Teacher demo() {
 		Teacher teacher = new Teacher();
-
+//		Teacher teacher2 = null;
+//		teacher2.getAge();
+		System.out.println(teacher.getName());
 		return teacher;
 	}
 

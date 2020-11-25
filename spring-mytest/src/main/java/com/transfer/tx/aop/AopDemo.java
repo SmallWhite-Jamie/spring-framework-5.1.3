@@ -24,7 +24,7 @@ public class AopDemo {
 		logger.info("创建 AopDemo 切面");
 	}
 
-	@Pointcut(value="execution(* com.transfer.tx.service.DemoService.*(..))")
+	@Pointcut(value="execution(* com.transfer.tx.DemoService.*(..))")
 	public void pointcut() {}
 
 	@Before("pointcut()")

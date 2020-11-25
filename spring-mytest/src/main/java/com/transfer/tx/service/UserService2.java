@@ -21,4 +21,8 @@ public class UserService2 implements IUserService2 {
 		return 1;
 	}
 
+	public void test() {
+		System.out.println("没有借口的方法");
+	}
+
 }

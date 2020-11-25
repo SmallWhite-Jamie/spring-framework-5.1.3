@@ -4,16 +4,20 @@ import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Role;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.interceptor.TransactionAttributeSource;
 
 import javax.sql.DataSource;
 
@@ -23,9 +27,9 @@ import javax.sql.DataSource;
  * @Description: ConfigTx
  */
 @Configuration
-@EnableAspectJAutoProxy
+@EnableAspectJAutoProxy(exposeProxy = true)
 @EnableTransactionManagement
-@ComponentScan(basePackages = {"com.transfer.tx.service", "com.transfer.tx.aop"})
+@ComponentScan(basePackages = {"com.transfer.tx"})
 @MapperScan(basePackages = "com.transfer.tx.mapper")
 public class ConfigTx {
     @Bean
@@ -58,4 +62,12 @@ public class ConfigTx {
 		sqlSessionFactoryBean.setConfigLocation(new InputStreamResource(resource.getInputStream()));
         return sqlSessionFactoryBean.getObject();
     }
+
+    // 测试事务publicMethodsOnly
+	@Bean("transactionAttributeSource")
+	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+	public TransactionAttributeSource transactionAttributeSource() {
+		return new AnnotationTransactionAttributeSource(false);
+	}
+
 }

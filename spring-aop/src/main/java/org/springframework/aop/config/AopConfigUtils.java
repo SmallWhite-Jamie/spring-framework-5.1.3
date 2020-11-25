@@ -120,6 +120,11 @@ public abstract class AopConfigUtils {
 
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 
+		// 如果已经包含一个name等于org.springframework.aop.config.internalAutoProxyCreator 的 BeanDefinition
+		// 则根据优先级进行取舍，例如：
+		//     @EnableAspectJAutoProxy(exposeProxy = true)  AnnotationAwareAspectJAutoProxyCreator 优先级高
+		//     @EnableTransactionManagement  InfrastructureAdvisorAutoProxyCreator 优先级低
+		// 二者同时出现时，取第一个不再创建第二个的BeanDefinition
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {

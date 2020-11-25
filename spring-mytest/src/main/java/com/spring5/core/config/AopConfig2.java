@@ -1,6 +1,7 @@
 package com.spring5.core.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * @author lizheng
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
  * @Description: AopConfig
  */
 @Configuration
+@PropertySource("classpath:application.properties")
 public class AopConfig2 {
 
 
