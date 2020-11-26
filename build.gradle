@@ -147,7 +147,11 @@ configure(allprojects) { project ->
 //	}
 
 	repositories {
-		maven { url "https://repo.spring.io/libs-release" }
+//		maven { url "https://repo.spring.io/libs-release" }
+		maven { url "https://maven.aliyun.com/repository/spring-plugin"}
+		maven { url "https://maven.aliyun.com/repository/gradle-plugin"}
+		maven { url "https://maven.aliyun.com/repository/spring" }
+		maven { url "https://maven.aliyun.com/repository/public" }
 	}
 
 	dependencies {
