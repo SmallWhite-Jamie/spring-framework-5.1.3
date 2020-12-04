@@ -13,6 +13,6 @@ public class InMain {
 	public static void main(String[] args) {
 		XMapper o = (XMapper) Proxy.newProxyInstance(InMain.class.getClassLoader(), new Class[]{XMapper.class}, new MyInvocationHandler());
 		System.out.println(Proxy.isProxyClass(o.getClass()));
-		o.test();
+		System.out.println(o.test());
 	}
 }

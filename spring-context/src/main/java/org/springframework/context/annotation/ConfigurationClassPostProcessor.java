@@ -328,7 +328,10 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		// 解析完成的配置类集合
 		Set<ConfigurationClass> alreadyParsed = new HashSet<>(configCandidates.size());
 		do {
-			// 解析配置类信息中的bean， 以 BeanDefinition 注册到 bean factory
+			// 解析配置类信息中的bean， 以 ConfigurationClass 存储到set集合中，
+			// 在解析过程中@ComponentScans扫描到的bean的定义信息会通过
+			// ComponentScanAnnotationParser.parse() -> ClassPathBeanDefinitionScanner.doScan()直接注册到容器中
+			// 但配置类本身的bean定义信息还未注册到容器中
 			parser.parse(candidates);
 			parser.validate();
 
@@ -341,6 +344,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						registry, this.sourceExtractor, this.resourceLoader, this.environment,
 						this.importBeanNameGenerator, parser.getImportRegistry());
 			}
+			// 将ConfigurationClass 以 BeanDefinition 形式注册，虽然集合中包含非配置类，但非配置类不会被注册
 			this.reader.loadBeanDefinitions(configClasses);
 			alreadyParsed.addAll(configClasses);
 

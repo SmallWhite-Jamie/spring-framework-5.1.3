@@ -8,5 +8,5 @@ package com.jdkproxy;
  * @date 2020/11/25 16:52
  */
 public interface XMapper {
-	void test();
+	String test();
 }
