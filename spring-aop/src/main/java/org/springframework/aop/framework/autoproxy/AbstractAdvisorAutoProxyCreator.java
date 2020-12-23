@@ -99,6 +99,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);
 		extendAdvisors(eligibleAdvisors);
 		// 对通知进行排序
+		// 此处的排序是根据 ordered 接口和切面类上直接的@Order注解, OrderUtils.getOrder(java.lang.Class<?>) 方法根据反射再切面类上获取
 		if (!eligibleAdvisors.isEmpty()) {
 			eligibleAdvisors = sortAdvisors(eligibleAdvisors);
 		}
