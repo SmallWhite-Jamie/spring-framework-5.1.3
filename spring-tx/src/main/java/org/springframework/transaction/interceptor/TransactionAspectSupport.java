@@ -296,7 +296,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				retVal = invocation.proceedWithInvocation();
 			}
 			catch (Throwable ex) {
-				// 根据事务异常属性配置，来处理异常 提交或者回滚
+				// 根据事务异常属性配置，来处理异常 提交或者回滚，会重置连接信息：隔离级别等
 				completeTransactionAfterThrowing(txInfo, ex);
 				throw ex;
 			}
@@ -304,7 +304,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				// 清理事务信息
 				cleanupTransactionInfo(txInfo);
 			}
-			// 正常结束提交事务
+			// 正常结束提交事务，会重置连接信息：隔离级别等
 			commitTransactionAfterReturning(txInfo);
 			return retVal;
 		}

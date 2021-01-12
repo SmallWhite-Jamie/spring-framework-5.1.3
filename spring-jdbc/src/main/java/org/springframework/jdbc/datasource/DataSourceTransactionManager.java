@@ -271,6 +271,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			//通过 ConnectionHolder 得到一个数据库连接对象
 			con = txObject.getConnectionHolder().getConnection();
 
+			// 设置连接新的隔离级别，并获取旧的隔离级别，待事务结束后，重置隔离级别
 			Integer previousIsolationLevel = DataSourceUtils.prepareConnectionForTransaction(con, definition);
 			txObject.setPreviousIsolationLevel(previousIsolationLevel);
 
