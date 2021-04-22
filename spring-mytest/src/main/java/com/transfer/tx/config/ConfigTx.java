@@ -1,6 +1,7 @@
 package com.transfer.tx.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.transfer.tx.tel.RegCustomerListener;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -67,6 +68,10 @@ public class ConfigTx {
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public TransactionAttributeSource transactionAttributeSource() {
 		return new AnnotationTransactionAttributeSource(false);
+	}
+	@Bean
+	public RegCustomerListener regCustomerListener() {
+    	return new RegCustomerListener();
 	}
 
 }

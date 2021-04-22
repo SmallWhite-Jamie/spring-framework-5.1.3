@@ -11,8 +11,8 @@ import java.lang.reflect.Proxy;
  */
 public class InMain {
 	public static void main(String[] args) {
-		XMapper o = (XMapper) Proxy.newProxyInstance(InMain.class.getClassLoader(), new Class[]{XMapper.class}, new MyInvocationHandler());
-		System.out.println(Proxy.isProxyClass(o.getClass()));
-		System.out.println(o.test());
+//		XMapper o = (XMapper) Proxy.newProxyInstance(InMain.class.getClassLoader(), new Class[]{XMapper.class}, new MyInvocationHandler());
+//		System.out.println(Proxy.isProxyClass(o.getClass()));
+//		System.out.println(o.test());
 	}
 }

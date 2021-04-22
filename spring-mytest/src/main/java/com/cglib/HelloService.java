@@ -5,7 +5,9 @@ package com.cglib;
  * @date: 10:47 2019/05/21
  * @Description: HelloService
  */
-public class HelloService {
+public class HelloService<T> {
+	private T t;
+
 	public HelloService() {
 		System.out.println("HelloService构造");
 	}
@@ -13,7 +15,7 @@ public class HelloService {
 	/**
 	 * 该方法不能被子类覆盖,Cglib是无法代理final修饰的方法的
 	 */
-	final public String sayOthers(String name) {
+	final public String sayOthers(T name) {
 		System.out.println("HelloService:sayOthers>>"+name);
 		return null;
 	}

@@ -1,8 +1,13 @@
 package com.transfer.tx.service;
 
+import com.transfer.tx.tel.Data;
+import com.transfer.tx.tel.RegCustomerEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @Description: UserService
  */
 @Service
-public class UserService implements IUserService {
+public class UserService implements IUserService, ApplicationContextAware {
 	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
@@ -36,8 +41,14 @@ public class UserService implements IUserService {
         return 1;
     }
 
+	@Override
 	public int insert2(int id, String username, String password) {
+		System.out.println("biz start");
 		template.update("insert into users (id, username, password) values (?,?,?)", id, username, password);
+		Data data = new Data();
+		data.setText("ceshi");
+		applicationContext.publishEvent(new RegCustomerEvent(data));
+		System.out.println("biz end");
 		return 1;
 	}
 
@@ -166,4 +177,10 @@ public class UserService implements IUserService {
 		System.out.println("间隙锁测试W结束");
 	}
 
+	private ApplicationContext applicationContext;
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
 }
